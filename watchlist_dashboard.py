@@ -16,6 +16,8 @@ import dash_html_components as html
 import plotly.express as px
 import plotly.graph_objects as go
 import dash_table
+from dash.exceptions import PreventUpdate
+
 
 
 
@@ -121,11 +123,11 @@ app.layout = html.Div([ # container
     #Title and Subtitle of the Dashboard
     html.Div([
         html.Div([
-            html.H1(children='Watchlist Dashboard', className="float-left"),
+            #html.H1(children='Watchlist Dashboard', className="float-left"),
 
             html.Img(
                     src="https://cdn.freebiesupply.com/images/large/2x/imdb-logo-transparent.png",
-                    className='sd_logo float-right'),
+                    className='navbar-brand sd_logo'),
         ], className="header mb-4"),
     ], className="row"),
 
@@ -266,6 +268,9 @@ app.layout = html.Div([ # container
     [dash.dependencies.Input('upload-data', 'contents')],
     [dash.dependencies.State('upload-data', 'filename')])
 def update_output(contents, filename):
+    if contents is None:
+        raise PreventUpdate
+
     if contents is not None:
         global watchlist
         general_info, decade_dict, genres_dict, genre_count_dict, watchlist =  parse_contents(contents, filename)
