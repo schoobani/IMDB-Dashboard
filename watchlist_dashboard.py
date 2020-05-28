@@ -34,6 +34,10 @@ def get_analysis(watchlist):
 
     genres_dict = dict()
     for i in range(len(watchlist["Genres"])):
+            #Remove ' from titles
+            watchlist['Title'].loc[i] = watchlist['Title'].loc[i].replace("'","")
+
+            # Split Genres and store them in dictionaries
             for k in watchlist["Genres"].loc[i]:
                 if k[0] == " ":
                     k = k.replace(" ","")
@@ -98,7 +102,8 @@ def get_titles(title_list):
 
     title_data = []
     for i in range(len(title_list)):
-        temp_dict = {'Title':title_list[i], 'Rank': float((watchlist.loc[watchlist['Title']== title_list[i]]['IMDb Rating']).to_list()[0])}
+        rank = float((watchlist.loc[watchlist['Title']== title_list[i]]['IMDb Rating']).to_list()[0])
+        temp_dict = {'Title':title_list[i], 'Rank': rank}
         title_data.append(temp_dict)
     #return title_data
     return sorted(title_data, key=itemgetter('Rank'), reverse=True)
@@ -262,6 +267,7 @@ app.layout = html.Div([ # container
     [dash.dependencies.State('upload-data', 'filename')])
 def update_output(contents, filename):
     if contents is not None:
+        global watchlist
         general_info, decade_dict, genres_dict, genre_count_dict, watchlist =  parse_contents(contents, filename)
         return (general_info[3],
                 general_info[2],
