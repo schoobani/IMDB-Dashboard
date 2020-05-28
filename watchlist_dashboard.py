@@ -3,6 +3,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import io
+import base64
+from operator import itemgetter
+
 
 
 import dash
@@ -12,6 +16,7 @@ import dash_html_components as html
 import plotly.express as px
 import plotly.graph_objects as go
 import dash_table
+
 
 
 
@@ -55,6 +60,28 @@ def get_analysis(watchlist):
     return (general_info, decade_dict, genres_dict, genre_count_dict)
 
 
+#Parsing the Uploaded contents
+def parse_contents(contents, filename):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+
+    try:
+        if 'csv' in filename:
+            # Assume that the user uploaded a CSV file
+            watchlist = pd.read_csv(io.StringIO(decoded.decode('ISO-8859-1')))
+
+    except Exception as e:
+        print(e)
+        return html.Div([
+            'There was an error processing this file. Please upload CSV file from provided by IMDB'
+        ])
+
+    general_info, decade_dict, genres_dict, genre_count_dict =  get_analysis(watchlist)
+    return (general_info, decade_dict, genres_dict, genre_count_dict, watchlist)
+
+
+
 #Read the Data and Get the analysis
 watchlist = pd.read_csv("/Users/choobani/Downloads/WATCHLIST.csv",encoding="ISO-8859-1")
 general_info, decade_dict, genres_dict, genre_count_dict =  get_analysis(watchlist)
@@ -71,9 +98,10 @@ def get_titles(title_list):
 
     title_data = []
     for i in range(len(title_list)):
-        temp_dict = {'Title':title_list[i]}
+        temp_dict = {'Title':title_list[i], 'Rank': float((watchlist.loc[watchlist['Title']== title_list[i]]['IMDb Rating']).to_list()[0])}
         title_data.append(temp_dict)
-    return title_data
+    #return title_data
+    return sorted(title_data, key=itemgetter('Rank'), reverse=True)
 
 
 #create the Dashboard
@@ -96,8 +124,28 @@ app.layout = html.Div([ # container
         ], className="header mb-4"),
     ], className="row"),
 
-    #Visualising the General Information
 
+    #Upload file
+    html.Div([
+        html.Div([
+        dcc.Upload(
+        id='upload-data',
+        children=html.Div([
+            'Drag and Drop or ',
+            html.A('Upload your Watchlist here')
+            ]),
+        # Allow multiple files to be uploaded
+        multiple=False
+    ),
+
+        ], className="col-md-12 upload"),
+    ], className="row"),
+
+
+
+
+
+    #Visualising stats and some General Information
     html.Div([
         html.Div([ # row
             #Total Movies
@@ -105,7 +153,7 @@ app.layout = html.Div([ # container
                 html.Div([
                 html.Div([
                     html.P("Total Movies", className="card-title"),
-                    html.H2(children=str(general_info[3]), className="card-text"),
+                    html.H2(children=str(general_info[3]), className="card-text", id='total_movies'),
                 ], className="card-body"),
                 ], className="card sd_card"),
             ], className='col-md-3 col-sm-6'),
@@ -116,7 +164,7 @@ app.layout = html.Div([ # container
                 html.Div([
                 html.Div([
                     html.P("Total Minutes", className="card-title"),
-                    html.H2(children=str(general_info[2]), className="card-text"),
+                    html.H2(children=str(general_info[2]), className="card-text", id='total_minutes'),
                 ], className="card-body"),
                 ], className="card sd_card"),
             ], className='col-md-3 col-sm-6'),
@@ -126,7 +174,7 @@ app.layout = html.Div([ # container
                 html.Div([
                 html.Div([
                     html.P("Average IMDB ranking", className="card-title"),
-                    html.H2(children=str(general_info[0]), className="card-text"),
+                    html.H2(children=str(general_info[0]), className="card-text", id='avg_rating_imdb'),
                 ], className="card-body")
                 ], className="card sd_card")
             ], className='col-md-3 col-sm-6'),
@@ -136,7 +184,7 @@ app.layout = html.Div([ # container
                 html.Div([
                 html.Div([
                     html.P("Average user ranking", className="card-title"),
-                    html.H2(children=str(general_info[1]), className="card-text"),
+                    html.H2(children=str(general_info[1]), className="card-text", id='avg_my_rating'),
                 ], className="card-body"),
                 ], className="card sd_card"),
             ], className='col-md-3 col-sm-6'),
@@ -184,9 +232,10 @@ app.layout = html.Div([ # container
                 html.Div([
                     dash_table.DataTable(
                         id='title_table',
-                        columns=[{"name": 'Movie Title', "id": 'Title'} ] ,
+                        columns=[{"name": 'Movie Title', "id": 'Title'},
+                                {"name": 'IMDB Rank', "id": 'Rank'}] ,
                         data=get_titles(genres_dict['Drama']['Title']),
-                        fixed_rows={'headers': True},
+                        style_cell={'textAlign': 'left', 'fontSize':14, 'font-family':'sans-serif'},
                         page_size=10,
                         style_header={'fontWeight': 'bold'},)
                 ], className="sd_dt_table"),
@@ -200,18 +249,35 @@ app.layout = html.Div([ # container
 ], className="container")
 
 
-#
-#
-@app.callback(
-    dash.dependencies.Output('title_table', 'data'),
-    [dash.dependencies.Input('pick_genre', 'value')])
-def update_title_table(value):
-    #data = []
-    # if value in :
-    return get_titles(genres_dict[value]['Title'])
-    #if 'MT' in selector:
-    #    data.append({'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'})
 
+@app.callback(
+    [dash.dependencies.Output('total_movies', 'children'),
+    dash.dependencies.Output('total_minutes', 'children'),
+    dash.dependencies.Output('avg_rating_imdb', 'children'),
+    dash.dependencies.Output('avg_my_rating', 'children'),
+    dash.dependencies.Output('genres_pie', 'figure'),
+    dash.dependencies.Output('decades_pie', 'figure'),
+    dash.dependencies.Output('title_table', 'data')],
+    [dash.dependencies.Input('upload-data', 'contents')],
+    [dash.dependencies.State('upload-data', 'filename')])
+def update_output(contents, filename):
+    if contents is not None:
+        general_info, decade_dict, genres_dict, genre_count_dict, watchlist =  parse_contents(contents, filename)
+        return (general_info[3],
+                general_info[2],
+                general_info[0],
+                general_info[1],
+                {"data": [go.Pie(labels=list(genre_count_dict.keys())[:10], values=list(genre_count_dict.values())[:10], hole=.3)]},
+                {"data": [go.Pie(labels=list(decade_dict.keys()), values=list(decade_dict.values()), hole=.3)]},
+                get_titles(genres_dict['Drama']['Title'])
+                )
+
+#
+# @app.callback(
+#     dash.dependencies.Output('title_table', 'data'),
+#     [dash.dependencies.Input('pick_genre', 'value')])
+# def update_title_table(value):
+#     return get_titles(genres_dict[value]['Title'])
 
 
 if __name__ == '__main__':
