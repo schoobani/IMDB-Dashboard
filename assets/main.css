@@ -2,6 +2,16 @@ body {
     background-color: #e9e9e9;
 }
 
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+
+
+
 .header {
     position: relative;
     width: 100%;
@@ -11,6 +21,19 @@ body {
 }
 
 .stats {
+    margin-bottom: 40px;
+}
+
+
+.upload {
+    width: 100%;
+    height: 60%;
+    line-height: 60px;
+    border-width: 1px;
+    border-style: dashed;
+    border-radius: 5px;
+    text-align: center;
+    margin: 10px;
     margin-bottom: 40px;
 }
 
@@ -30,5 +53,5 @@ body {
 }
 
 .sd_dt_table {
-    text-align: left !important;
+    
 }
