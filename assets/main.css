@@ -3,15 +3,10 @@ body {
 }
 
 .container {
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
+    max-width: 100%}
 }
 
-
-
-
+mo
 .header {
     position: relative;
     width: 100%;
@@ -39,6 +34,7 @@ body {
 
 .sd_logo {
     width: 200px;
+    align-items: center;
 }
 
 .card.sd_card {
@@ -53,5 +49,5 @@ body {
 }
 
 .sd_dt_table {
-    
+
 }
