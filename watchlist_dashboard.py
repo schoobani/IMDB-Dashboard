@@ -17,6 +17,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import dash_table
 from dash.exceptions import PreventUpdate
+from dash.dash import no_update
 
 
 
@@ -32,19 +33,18 @@ def get_analysis(watchlist):
     watchlist["Year"] = watchlist["Year"].apply(get_decade)
     watchlist["Genres"] = watchlist["Genres"].apply(split_genres)
 
+    #Get genres and their decades
     genres_dict = dict()
     for i in range(len(watchlist["Genres"])):
-            #Remove ' from titles
             watchlist['Title'].loc[i] = watchlist['Title'].loc[i].replace("'","")
-
-            # Split Genres and store them in dictionaries
             for k in watchlist["Genres"].loc[i]:
                 if k[0] == " ":
                     k = k.replace(" ","")
                 if k not in genres_dict.keys():
-                    genres_dict[k] = {'count':0,'Title':[]}
+                    genres_dict[k] = {'count':0,'movies':{watchlist["Title"].iloc[i]:0}}
                 genres_dict[k]['count'] = genres_dict[k]['count']  +1
-                genres_dict[k]['Title'].append(watchlist["Title"].iloc[i])
+
+                genres_dict[k]['movies'][watchlist["Title"].iloc[i]] = watchlist["Year"].iloc[i]
 
     #Number of movies in each genre
     genre_count_dict = dict()
@@ -102,18 +102,49 @@ general_info, decade_dict, genres_dict, genre_count_dict, top_directors=  get_an
 
 #Get Genres Options
 genre_options = []
+genre_options.append({'label':'All','value':'all'})
 for k in genre_count_dict.keys():
     temp_dict = {'label':k,'value':k}
     genre_options.append(temp_dict)
 
 #Get Decade Options
 decade_options = []
+decade_options.append({'label':'All','value':'all'})
 for k in decade_dict.keys():
     temp_dict = {'label':k,'value':k}
     decade_options.append(temp_dict)
 
 #Get movie titles in each genre
-def get_titles(title_list):
+def get_titles(genres_dict, genre, decade):
+    #All genres and all decades
+    title_list = []
+
+    if genre == 'all' and decade == 'all':
+        title_list = list(watchlist['Title'])
+
+    #Specific Genre and all decades
+    if decade == 'all' and genre != 'all':
+        for k1 in genres_dict.keys():
+            if k1 == genre :
+                for k2 in genres_dict[k1]['movies']:
+                    title_list.append(k2)
+
+    #All genres and Specific decades
+    if decade != 'all' and genre == 'all':
+        for k1 in genres_dict.keys():
+            for k2 in genres_dict[k1]['movies']:
+                if genres_dict[k1]['movies'][k2] == decade:
+                    title_list.append(k2)
+                    title_list = list(set(title_list))
+
+
+    #Specific genres and Specific decades
+    if decade != 'all' and genre != 'all':
+        for k1 in genres_dict.keys():
+            if k1 == genre :
+                for k2 in genres_dict[k1]['movies']:
+                    if genres_dict[k1]['movies'][k2] == decade:
+                        title_list.append(k2)
 
     title_data = []
     for i in range(len(title_list)):
@@ -336,7 +367,7 @@ html.Div([ # container
                                     id='title_table',
                                     columns=[{"name": 'Movie Title', "id": 'Title'},
                                             {"name": 'IMDB Rank', "id": 'Rank'}] ,
-                                    data=get_titles(genres_dict['Drama']['Title']),
+                                    data=get_titles(genres_dict, 'Drama', 1900),
                                     style_cell={'textAlign': 'left', 'fontSize':14, 'font-family':'sans-serif'},
                                     page_size=10,
                                     style_header={'fontWeight': 'bold'},)
@@ -370,39 +401,33 @@ html.Div([ # container
     dash.dependencies.Output('director_4_name', 'children'),
     dash.dependencies.Output('director_5_name', 'children'),
     dash.dependencies.Output('director_6_name', 'children')],
-    [dash.dependencies.Input('upload-data', 'contents')],
+    [dash.dependencies.Input('pick_genre', 'value'),
+    dash.dependencies.Input('pick_decade', 'value'),
+    dash.dependencies.Input('upload-data', 'contents')],
     [dash.dependencies.State('upload-data', 'filename')])
-def update_output(contents, filename):
+def update_output(value_genre, value_decade, contents, filename):
     if contents is None:
         raise PreventUpdate
 
     if contents is not None:
         global watchlist
         general_info, decade_dict, genres_dict, genre_count_dict, watchlist, top_directors =  parse_contents(contents, filename)
-        return (general_info[3],
-                general_info[2],
-                general_info[0],
-                general_info[1],
-                {"data": [go.Pie(labels=list(genre_count_dict.keys())[:10], values=list(genre_count_dict.values())[:10], hole=.3)]},
-                {"data": [go.Pie(labels=list(decade_dict.keys()), values=list(decade_dict.values()), hole=.3)]},
-                get_titles(genres_dict['Drama']['Title']),
-                top_directors[0][0],
-                top_directors[1][0],
-                top_directors[2][0],
-                top_directors[3][0],
-                top_directors[4][0],
-                top_directors[5][0],
+        return (general_info[3], #Total Movies
+                general_info[2], #Total Minutes
+                general_info[0], #Average IMDB ranking
+                general_info[1], #Average User ranking
+                {"data": [go.Pie(labels=list(genre_count_dict.keys())[:10], values=list(genre_count_dict.values())[:10], hole=.3)]}, #Genres Pie Chart
+                {"data": [go.Pie(labels=list(decade_dict.keys()), values=list(decade_dict.values()), hole=.3)]}, #Decades Pie Chart
+                get_titles(genres_dict, value_genre, value_decade), #Titles Data Table
+                top_directors[0][0], #Director 1
+                top_directors[1][0], #Director 2
+                top_directors[2][0], #Director 3
+                top_directors[3][0], #Director 4
+                top_directors[4][0], #Director 5
+                top_directors[5][0], #Director 6
                 )
 
 #
-# @app.callback(
-#     dash.dependencies.Output('title_table', 'data'),
-#     [dash.dependencies.Input('pick_genre', 'value')])
-# def update_title_table(value):
-#     if value == 'Drama':
-#         raise PreventUpdate
-#     else:
-#         return get_titles(genres_dict[value]['Title'])
 
 
 if __name__ == '__main__':
