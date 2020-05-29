@@ -149,7 +149,9 @@ def get_titles(genres_dict, genre, decade):
     title_data = []
     for i in range(len(title_list)):
         rank = float((watchlist.loc[watchlist['Title']== title_list[i]]['IMDb Rating']).to_list()[0])
-        temp_dict = {'Title':title_list[i], 'Rank': rank}
+        fans = float((watchlist.loc[watchlist['Title']== title_list[i]]['Num Votes']).to_list()[0])
+        fans = str("%.0f" %(fans/1000))+" k"
+        temp_dict = {'Title':title_list[i], 'Rank': rank, 'Fans':fans}
         title_data.append(temp_dict)
     #return title_data
     return sorted(title_data, key=itemgetter('Rank'), reverse=True)
@@ -366,8 +368,9 @@ html.Div([ # container
                                 dash_table.DataTable(
                                     id='title_table',
                                     columns=[{"name": 'Movie Title', "id": 'Title'},
-                                            {"name": 'IMDB Rank', "id": 'Rank'}] ,
-                                    data=get_titles(genres_dict, 'Drama', 1900),
+                                            {"name": 'IMDB Rank', "id": 'Rank'},
+                                            {"name": 'Rate Counts', "id": 'Fans'}] ,
+                                    data=get_titles(genres_dict, 'all', 'all'),
                                     style_cell={'textAlign': 'left', 'fontSize':14, 'font-family':'sans-serif'},
                                     page_size=10,
                                     style_header={'fontWeight': 'bold'},)
@@ -428,7 +431,5 @@ def update_output(value_genre, value_decade, contents, filename):
                 )
 
 #
-
-
 if __name__ == '__main__':
     app.run_server(debug=True, use_reloader=False)
