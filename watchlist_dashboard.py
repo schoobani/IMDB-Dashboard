@@ -62,7 +62,10 @@ def get_analysis(watchlist):
 
     #General Statistics
     avg_rating_imdb = "%.2f" %np.mean(watchlist['IMDb Rating'])
-    avg_my_rating = "%.2f" %np.mean(watchlist[watchlist['Your Rating'].notnull()]['Your Rating'])
+    try:
+        avg_my_rating = "%.2f" %np.mean(watchlist[watchlist['Your Rating'].notnull()]['Your Rating'])
+    except:
+        avg_my_rating= "0"
     sum_run_time = sum(watchlist[watchlist['Runtime (mins)'].notnull()]['Runtime (mins)'])
     total_movies = len(watchlist)
     general_info = [avg_rating_imdb, avg_my_rating, sum_run_time, total_movies]
@@ -209,7 +212,7 @@ html.Div([ # container
                         ], className="card-body"),
                     ], className="card card-info"),
                 ], className='col-md-3 col-sm-6'),
-            
+
             ], className='row'),
         ], className="container-fluid"),
     ], className="panel_general_info panel"),
@@ -302,7 +305,7 @@ html.Div([ # container
                     ], className='chart-block'),
                 ], className='col-lg-4 col-md-6 col-sm-12'),
 
-                html.Div([ 
+                html.Div([
                     html.Div([ # Container
 
                         html.Div([ # Row
@@ -338,7 +341,7 @@ html.Div([ # container
                                     page_size=10,
                                     style_header={'fontWeight': 'bold'},)
                             ], className="sd_dt_table col-md-12"),
-                            
+
                         ], className="row"),
 
                     ], className='container-fluid'),
