@@ -20,8 +20,6 @@ from dash.exceptions import PreventUpdate
 
 
 
-
-
 #analysis and data
 def get_analysis(watchlist):
 
@@ -48,22 +46,28 @@ def get_analysis(watchlist):
                 genres_dict[k]['count'] = genres_dict[k]['count']  +1
                 genres_dict[k]['Title'].append(watchlist["Title"].iloc[i])
 
+    #Number of movies in each genre
     genre_count_dict = dict()
     for k in genres_dict.keys():
         genre_count_dict[k] = genres_dict[k]['count']
     genre_count_dict = {k: genre_count_dict[k] for k in sorted(genre_count_dict, key=genre_count_dict.get, reverse=True)}
 
+    #get Movies by decades
     decade_dict = watchlist.groupby(['Year']).agg({'Title':"count"}).to_dict()['Title']
 
+    #get Top Directors
+    top_directors = watchlist.groupby(['Directors']).agg({'Title':"count"}).to_dict()['Title']
+    top_directors = {k: top_directors[k] for k in sorted(top_directors, key=top_directors.get, reverse=True)}
+    top_directors = list(top_directors.items())
+
+    #General Statistics
     avg_rating_imdb = "%.2f" %np.mean(watchlist['IMDb Rating'])
     avg_my_rating = "%.2f" %np.mean(watchlist[watchlist['Your Rating'].notnull()]['Your Rating'])
     sum_run_time = sum(watchlist[watchlist['Runtime (mins)'].notnull()]['Runtime (mins)'])
     total_movies = len(watchlist)
-
-
     general_info = [avg_rating_imdb, avg_my_rating, sum_run_time, total_movies]
 
-    return (general_info, decade_dict, genres_dict, genre_count_dict)
+    return (general_info, decade_dict, genres_dict, genre_count_dict, top_directors)
 
 
 #Parsing the Uploaded contents
@@ -83,14 +87,14 @@ def parse_contents(contents, filename):
             'There was an error processing this file. Please upload CSV file from provided by IMDB'
         ])
 
-    general_info, decade_dict, genres_dict, genre_count_dict =  get_analysis(watchlist)
-    return (general_info, decade_dict, genres_dict, genre_count_dict, watchlist)
+    general_info, decade_dict, genres_dict, genre_count_dict, top_directors =  get_analysis(watchlist)
+    return (general_info, decade_dict, genres_dict, genre_count_dict, watchlist, top_directors)
 
 
 
 #Read the Data and Get the analysis
 watchlist = pd.read_csv("/Users/choobani/Downloads/WATCHLIST.csv",encoding="ISO-8859-1")
-general_info, decade_dict, genres_dict, genre_count_dict =  get_analysis(watchlist)
+general_info, decade_dict, genres_dict, genre_count_dict, top_directors=  get_analysis(watchlist)
 
 
 #Get Genres Options
@@ -98,6 +102,12 @@ genre_options = []
 for k in genre_count_dict.keys():
     temp_dict = {'label':k,'value':k}
     genre_options.append(temp_dict)
+
+#Get Decade Options
+decade_options = []
+for k in decade_dict.keys():
+    temp_dict = {'label':k,'value':k}
+    decade_options.append(temp_dict)
 
 #Get movie titles in each genre
 def get_titles(title_list):
@@ -111,7 +121,11 @@ def get_titles(title_list):
     return sorted(title_data, key=itemgetter('Rank'), reverse=True)
 
 
-#create the Dashboard
+
+
+
+######### -------- create the Dashboard -------- #########
+
 external_stylesheets = [
     'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
     'https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -149,109 +163,193 @@ app.layout = html.Div([ # container
     ], className="row"),
 
 
-
-
-
-    #Visualising stats and some General Information
+    #Visualising stats and some General Information and Top Directors
     html.Div([
         html.Div([ # row
-            #Total Movies
-            html.Div([
-                html.Div([
-                html.Div([
-                    html.P("Total Movies", className="card-title"),
-                    html.H2(children=str(general_info[3]), className="card-text", id='total_movies'),
-                ], className="card-body"),
-                ], className="card sd_card"),
-            ], className='col-md-3 col-sm-6'),
+                html.Div([ #General Info
+
+                    #Total Movies
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.P("Total Movies", className="card-title"),
+                                html.H2(children=str(general_info[3]), className="card-text", id='total_movies'),
+                                ], className="card-body"),
+                            ], className="card sd_card"),
+                        ], className='col-md-3'),
 
 
-            #Total Minutes
-            html.Div([
-                html.Div([
-                html.Div([
-                    html.P("Total Minutes", className="card-title"),
-                    html.H2(children=str(general_info[2]), className="card-text", id='total_minutes'),
-                ], className="card-body"),
-                ], className="card sd_card"),
-            ], className='col-md-3 col-sm-6'),
+                    #Total Minutes
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.P("Total Minutes", className="card-title"),
+                                html.H2(children=str(general_info[2]), className="card-text", id='total_minutes'),
+                                ], className="card-body"),
+                            ], className="card sd_card"),
+                        ], className='col-md-3'),
 
-            #Average IMDB ranking
-            html.Div([
-                html.Div([
-                html.Div([
-                    html.P("Average IMDB ranking", className="card-title"),
-                    html.H2(children=str(general_info[0]), className="card-text", id='avg_rating_imdb'),
-                ], className="card-body")
-                ], className="card sd_card")
-            ], className='col-md-3 col-sm-6'),
+                    #Average IMDB ranking
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.P("IMDB ranking", className="card-title"),
+                                html.H2(children=str(general_info[0]), className="card-text", id='avg_rating_imdb'),
+                                ], className="card-body")
+                            ], className="card sd_card")
+                        ], className='col-md-3'),
 
-            #Average User ranking
-            html.Div([
-                html.Div([
-                html.Div([
-                    html.P("Average user ranking", className="card-title"),
-                    html.H2(children=str(general_info[1]), className="card-text", id='avg_my_rating'),
-                ], className="card-body"),
-                ], className="card sd_card"),
-            ], className='col-md-3 col-sm-6'),
+                    #Average User ranking
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.P("User ranking", className="card-title"),
+                                html.H2(children=str(general_info[1]), className="card-text", id='avg_my_rating'),
+                                ], className="card-body"),
+                            ], className="card sd_card"),
+                        ], className='col-md-3'),
+                ], className='row col-md-6'),
+
+
+
+                html.Div([ #Directos
+
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.H4("1", className="card-title"),
+                                html.H6(children=str(top_directors[0][0]), id='director_1_name'),
+                                    ]),
+                                ]),
+                            ], className='col-md-2'),
+
+
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.H4("2", className="card-title"),
+                                html.H6(children=str(top_directors[1][0]), id='director_2_name'),
+                                ]),
+                            ]),
+                        ], className='col-md-2'),
+
+
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.H4("3", className="card-title"),
+                                html.H6(children=str(top_directors[2][0]), id='director_3_name'),
+                                ]),
+                            ]),
+                        ], className='col-md-2'),
+
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.H4("4", className="card-title"),
+                                html.H6(children=str(top_directors[3][0]), id='director_4_name'),
+                                ]),
+                            ]),
+                        ], className='col-md-2'),
+
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.H4("5", className="card-title"),
+                                html.H6(children=str(top_directors[4][0]), id='director_5_name'),
+                                ]),
+                            ]),
+                        ], className='col-md-2'),
+
+
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.H4("6", className="card-title"),
+                                html.H6(children=str(top_directors[6][0]), id='director_6_name'),
+                                ]),
+                            ]),
+                        ], className='col-md-2'),
+
+
+            ], className='row col-md-6'),
+
+
+
 
         ], className="row"),
-    ], className="stats"),
+    ], className="col-md-12 stats"),
 
 
-    #Genres and Decades Pie Charts
-    html.Div([ # row
+    #Genres and Decades Pie Charts and Data table
+    html.Div([
+        html.Div([ # row
 
-        html.Div([
             html.Div([
-                dcc.Graph(
-                    id='genres_pie',
-                    figure=go.Figure(
-                    data=[go.Pie(labels=list(genre_count_dict.keys())[:10], values=list(genre_count_dict.values())[:10], hole=.3)],
-                    layout=go.Layout(title='Top 10 Genres', titlefont=dict(size=20))))
-            ], className='cart-block'),
-        ], className='col-md-4 col-sm-6'),
-
-
-        html.Div([
-            html.Div([
-                dcc.Graph(
-                    id='decades_pie',
-                    figure=go.Figure(
-                    data=[go.Pie(labels=list(decade_dict.keys()), values=list(decade_dict.values()), hole=.3)],
-                    layout=go.Layout(title='Decades',  titlefont=dict(size=20))))
-            ], className='chart-block'),
-        ], className='col-md-4 col-sm-6'),
-
-
-        html.Div([
-            html.Div([
-
                 html.Div([
-                    #html.P('Choose The Genre to see Best Movies:'),
-                    dcc.Dropdown(
-                        id='pick_genre',
-                        options=genre_options,
-                        value="Drama"),
-                ], className="sd_dt_select mb-2"),
+                    dcc.Graph(
+                        id='genres_pie',
+                        figure=go.Figure(
+                        data=[go.Pie(labels=list(genre_count_dict.keys())[:10], values=list(genre_count_dict.values())[:10], hole=.3)],
+                        layout=go.Layout(title='Top 10 Genres', titlefont=dict(size=20))))
+                ], className='cart-block'),
+            ], className='col-md-4 col-sm-6'),
 
+
+            html.Div([
                 html.Div([
-                    dash_table.DataTable(
-                        id='title_table',
-                        columns=[{"name": 'Movie Title', "id": 'Title'},
-                                {"name": 'IMDB Rank', "id": 'Rank'}] ,
-                        data=get_titles(genres_dict['Drama']['Title']),
-                        style_cell={'textAlign': 'left', 'fontSize':14, 'font-family':'sans-serif'},
-                        page_size=10,
-                        style_header={'fontWeight': 'bold'},)
-                ], className="sd_dt_table"),
+                    dcc.Graph(
+                        id='decades_pie',
+                        figure=go.Figure(
+                        data=[go.Pie(labels=list(decade_dict.keys()), values=list(decade_dict.values()), hole=.3)],
+                        layout=go.Layout(title='Decades',  titlefont=dict(size=20))))
+                ], className='chart-block'),
+            ], className='col-md-4 col-sm-6'),
 
 
-            ], className='sd_datatable'),
-        ], className='col-md-4 col-sm-12'),
+            html.Div([
+                html.Div([
 
-    ], className="row"),
+                    html.Div([
+
+                        html.Div([
+                        #html.P('Choose The Genre to see Best Movies:'),
+                        dcc.Dropdown(
+                            id='pick_genre',
+                            options=genre_options,
+                            value="Drama"),
+
+                        ], className='col-md-4 col-sm-6'),
+
+                        html.Div([
+                        #html.P('Choose The Genre to see Best Movies:'),
+                        dcc.Dropdown(
+                            id='pick_decade',
+                            options=decade_options,
+                            value=2010),
+
+                        ], className='col-md-4 col-sm-6'),
+
+
+                    ], className="row"),
+
+                    html.Div([
+                        dash_table.DataTable(
+                            id='title_table',
+                            columns=[{"name": 'Movie Title', "id": 'Title'},
+                                    {"name": 'IMDB Rank', "id": 'Rank'}] ,
+                            data=get_titles(genres_dict['Drama']['Title']),
+                            style_cell={'textAlign': 'left', 'fontSize':14, 'font-family':'sans-serif'},
+                            page_size=10,
+                            style_header={'fontWeight': 'bold'},)
+                    ], className="sd_dt_table"),
+
+
+                ], className='sd_datatable'),
+            ], className='col-md-4 col-sm-12'),
+
+        ], className="row"),
+    ], className="col-md-12")
 
 ], className="container")
 
@@ -264,7 +362,13 @@ app.layout = html.Div([ # container
     dash.dependencies.Output('avg_my_rating', 'children'),
     dash.dependencies.Output('genres_pie', 'figure'),
     dash.dependencies.Output('decades_pie', 'figure'),
-    dash.dependencies.Output('title_table', 'data')],
+    dash.dependencies.Output('title_table', 'data'),
+    dash.dependencies.Output('director_1_name', 'children'),
+    dash.dependencies.Output('director_2_name', 'children'),
+    dash.dependencies.Output('director_3_name', 'children'),
+    dash.dependencies.Output('director_4_name', 'children'),
+    dash.dependencies.Output('director_5_name', 'children'),
+    dash.dependencies.Output('director_6_name', 'children')],
     [dash.dependencies.Input('upload-data', 'contents')],
     [dash.dependencies.State('upload-data', 'filename')])
 def update_output(contents, filename):
@@ -273,14 +377,20 @@ def update_output(contents, filename):
 
     if contents is not None:
         global watchlist
-        general_info, decade_dict, genres_dict, genre_count_dict, watchlist =  parse_contents(contents, filename)
+        general_info, decade_dict, genres_dict, genre_count_dict, watchlist, top_directors =  parse_contents(contents, filename)
         return (general_info[3],
                 general_info[2],
                 general_info[0],
                 general_info[1],
                 {"data": [go.Pie(labels=list(genre_count_dict.keys())[:10], values=list(genre_count_dict.values())[:10], hole=.3)]},
                 {"data": [go.Pie(labels=list(decade_dict.keys()), values=list(decade_dict.values()), hole=.3)]},
-                get_titles(genres_dict['Drama']['Title'])
+                get_titles(genres_dict['Drama']['Title']),
+                top_directors[0][0],
+                top_directors[1][0],
+                top_directors[2][0],
+                top_directors[3][0],
+                top_directors[4][0],
+                top_directors[5][0],
                 )
 
 #
@@ -288,7 +398,10 @@ def update_output(contents, filename):
 #     dash.dependencies.Output('title_table', 'data'),
 #     [dash.dependencies.Input('pick_genre', 'value')])
 # def update_title_table(value):
-#     return get_titles(genres_dict[value]['Title'])
+#     if value == 'Drama':
+#         raise PreventUpdate
+#     else:
+#         return get_titles(genres_dict[value]['Title'])
 
 
 if __name__ == '__main__':
