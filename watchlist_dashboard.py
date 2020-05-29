@@ -130,7 +130,8 @@ external_stylesheets = ['https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/boo
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-app.layout = html.Div([ # container
+app.layout = html.Div([
+html.Div([ # container
 
     #Title and Subtitle of the Dashboard
     html.Div([
@@ -347,7 +348,8 @@ app.layout = html.Div([ # container
         ], className="container-fluid"),
     ], className="panel_body panel"),
 
-], className="container")
+], className="container-fluid")
+], className="site-container")
 
 
 
