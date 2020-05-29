@@ -93,7 +93,7 @@ def parse_contents(contents, filename):
 
 
 #Read the Data and Get the analysis
-watchlist = pd.read_csv("/Users/choobani/Downloads/WATCHLIST.csv",encoding="ISO-8859-1")
+watchlist = pd.read_csv("datasets/WATCHLIST_vahab.csv",encoding="ISO-8859-1")
 general_info, decade_dict, genres_dict, genre_count_dict, top_directors=  get_analysis(watchlist)
 
 
@@ -126,9 +126,7 @@ def get_titles(title_list):
 
 ######### -------- create the Dashboard -------- #########
 
-external_stylesheets = [
-    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
-    'https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = ['https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
@@ -137,219 +135,217 @@ app.layout = html.Div([ # container
     #Title and Subtitle of the Dashboard
     html.Div([
         html.Div([
-            #html.H1(children='Watchlist Dashboard', className="float-left"),
-
-            html.Img(
+            html.Div([
+                html.Img(
                     src="https://cdn.freebiesupply.com/images/large/2x/imdb-logo-transparent.png",
                     className='navbar-brand sd_logo'),
-        ], className="header mb-4"),
-    ], className="row"),
-
+            ], className="row"),
+        ], className="container-fluid"),
+    ], className="panel_header panel"),
 
     #Upload file
     html.Div([
         html.Div([
-        dcc.Upload(
-        id='upload-data',
-        children=html.Div([
-            'Drag and Drop or ',
-            html.A('Upload your Watchlist here')
-            ]),
-        # Allow multiple files to be uploaded
-        multiple=False
-    ),
+            html.Div([
+                html.Div([
+                    dcc.Upload(
+                            id='upload-data',
+                            children=html.Div([
+                                'Drag and Drop or ',
+                                html.A('Upload your Watchlist here')
+                                ]),
+                            # Allow multiple files to be uploaded
+                            multiple=False
+                        ),
 
-        ], className="col-md-12 upload"),
-    ], className="row"),
+                ], className="col-md-12"),
+            ], className="row"),
+        ], className="container-fluid"),
+    ], className="panel_upload panel"),
 
 
     #Visualising stats and some General Information and Top Directors
-    html.Div([
-        html.Div([ # row
-                html.Div([ #General Info
+    html.Div([ # Generel Info Panel
+        html.Div([ # Container
+            html.Div([ #Row
 
-                    #Total Movies
+                #Total Movies
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.P("Total Movies", className="card-title"),
-                                html.H2(children=str(general_info[3]), className="card-text", id='total_movies'),
-                                ], className="card-body"),
-                            ], className="card sd_card"),
-                        ], className='col-md-3'),
+                            html.P("Total Movies", className="card-title"),
+                            html.H2(children=str(general_info[3]), className="card-text", id='total_movies'),
+                        ], className="card-body"),
+                    ], className="card card-info"),
+                ], className='col-md-3 col-sm-6'),
 
-
-                    #Total Minutes
+                #Total Minutes
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.P("Total Minutes", className="card-title"),
-                                html.H2(children=str(general_info[2]), className="card-text", id='total_minutes'),
-                                ], className="card-body"),
-                            ], className="card sd_card"),
-                        ], className='col-md-3'),
+                            html.P("Total Minutes", className="card-title"),
+                            html.H2(children=str(general_info[2]), className="card-text", id='total_minutes'),
+                        ], className="card-body"),
+                    ], className="card card-info"),
+                ], className='col-md-3 col-sm-6'),
 
-                    #Average IMDB ranking
+                #Average IMDB ranking
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.P("IMDB ranking", className="card-title"),
-                                html.H2(children=str(general_info[0]), className="card-text", id='avg_rating_imdb'),
-                                ], className="card-body")
-                            ], className="card sd_card")
-                        ], className='col-md-3'),
+                            html.P("IMDB ranking", className="card-title"),
+                            html.H2(children=str(general_info[0]), className="card-text", id='avg_rating_imdb'),
+                        ], className="card-body")
+                    ], className="card card-info")
+                ], className='col-md-3 col-sm-6'),
 
-                    #Average User ranking
+                #Average User ranking
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.P("User ranking", className="card-title"),
-                                html.H2(children=str(general_info[1]), className="card-text", id='avg_my_rating'),
-                                ], className="card-body"),
-                            ], className="card sd_card"),
-                        ], className='col-md-3'),
-                ], className='row col-md-6'),
+                            html.P("User ranking", className="card-title"),
+                            html.H2(children=str(general_info[1]), className="card-text", id='avg_my_rating'),
+                        ], className="card-body"),
+                    ], className="card card-info"),
+                ], className='col-md-3 col-sm-6'),
+            
+            ], className='row'),
+        ], className="container-fluid"),
+    ], className="panel_general_info panel"),
 
+    html.Div([ # Directors Panel
+        html.Div([ # Container
+            html.Div([ #Row
 
-
-                html.Div([ #Directos
-
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.H4("1", className="card-title"),
-                                html.H6(children=str(top_directors[0][0]), id='director_1_name'),
-                                    ]),
-                                ]),
-                            ], className='col-md-2'),
+                            html.H4("1", className="card-title"),
+                            html.H6(children=str(top_directors[0][0]), id='director_1_name', className="card-text"),
+                        ], className="card-body"),
+                    ], className="card card-director"),
+                ], className='col-lg-2 col-md-4'),
 
-
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.H4("2", className="card-title"),
-                                html.H6(children=str(top_directors[1][0]), id='director_2_name'),
-                                ]),
-                            ]),
-                        ], className='col-md-2'),
+                            html.H4("2", className="card-title"),
+                            html.H6(children=str(top_directors[1][0]), id='director_2_name', className="card-text"),
+                        ], className="card-body"),
+                    ], className="card card-director"),
+                ], className='col-lg-2 col-md-4'),
 
-
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.H4("3", className="card-title"),
-                                html.H6(children=str(top_directors[2][0]), id='director_3_name'),
-                                ]),
-                            ]),
-                        ], className='col-md-2'),
+                            html.H4("3", className="card-title"),
+                            html.H6(children=str(top_directors[2][0]), id='director_3_name', className="card-text"),
+                        ], className="card-body"),
+                    ], className="card card-director"),
+                ], className='col-lg-2 col-md-4'),
 
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.H4("4", className="card-title"),
-                                html.H6(children=str(top_directors[3][0]), id='director_4_name'),
-                                ]),
-                            ]),
-                        ], className='col-md-2'),
+                            html.H4("4", className="card-title"),
+                            html.H6(children=str(top_directors[3][0]), id='director_4_name', className="card-text"),
+                        ], className="card-body"),
+                    ], className="card card-director"),
+                ], className='col-lg-2 col-md-4'),
 
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.H4("5", className="card-title"),
-                                html.H6(children=str(top_directors[4][0]), id='director_5_name'),
-                                ]),
-                            ]),
-                        ], className='col-md-2'),
+                            html.H4("5", className="card-title"),
+                            html.H6(children=str(top_directors[4][0]), id='director_5_name', className="card-text"),
+                        ], className="card-body"),
+                    ], className="card card-director"),
+                ], className='col-lg-2 col-md-4'),
 
-
+                html.Div([
                     html.Div([
                         html.Div([
-                            html.Div([
-                                html.H4("6", className="card-title"),
-                                html.H6(children=str(top_directors[6][0]), id='director_6_name'),
-                                ]),
-                            ]),
-                        ], className='col-md-2'),
+                            html.H4("6", className="card-title"),
+                            html.H6(children=str(top_directors[6][0]), id='director_6_name', className="card-text"),
+                        ], className="card-body"),
+                    ], className="card card-director"),
+                ], className='col-lg-2 col-md-4'),
 
-
-            ], className='row col-md-6'),
-
-
-
-
-        ], className="row"),
-    ], className="col-md-12 stats"),
-
+            ], className='row'),
+        ], className="container-fluid"),
+    ], className="panel_directors panel"),
 
     #Genres and Decades Pie Charts and Data table
-    html.Div([
-        html.Div([ # row
+    html.Div([ # Body Panel
+        html.Div([ # Container
+            html.Div([ # Row
 
-            html.Div([
                 html.Div([
-                    dcc.Graph(
-                        id='genres_pie',
-                        figure=go.Figure(
-                        data=[go.Pie(labels=list(genre_count_dict.keys())[:10], values=list(genre_count_dict.values())[:10], hole=.3)],
-                        layout=go.Layout(title='Top 10 Genres', titlefont=dict(size=20))))
-                ], className='cart-block'),
-            ], className='col-md-4 col-sm-6'),
-
-
-            html.Div([
-                html.Div([
-                    dcc.Graph(
-                        id='decades_pie',
-                        figure=go.Figure(
-                        data=[go.Pie(labels=list(decade_dict.keys()), values=list(decade_dict.values()), hole=.3)],
-                        layout=go.Layout(title='Decades',  titlefont=dict(size=20))))
-                ], className='chart-block'),
-            ], className='col-md-4 col-sm-6'),
-
-
-            html.Div([
-                html.Div([
-
                     html.Div([
-
-                        html.Div([
-                        #html.P('Choose The Genre to see Best Movies:'),
-                        dcc.Dropdown(
-                            id='pick_genre',
-                            options=genre_options,
-                            value="Drama"),
-
-                        ], className='col-md-4 col-sm-6'),
-
-                        html.Div([
-                        #html.P('Choose The Genre to see Best Movies:'),
-                        dcc.Dropdown(
-                            id='pick_decade',
-                            options=decade_options,
-                            value=2010),
-
-                        ], className='col-md-4 col-sm-6'),
+                        dcc.Graph(
+                            id='genres_pie',
+                            figure=go.Figure(
+                            data=[go.Pie(labels=list(genre_count_dict.keys())[:10], values=list(genre_count_dict.values())[:10], hole=.3)],
+                            layout=go.Layout(title='Top 10 Genres', titlefont=dict(size=20))))
+                    ], className='chart-block'),
+                ], className='col-lg-4 col-md-6 col-sm-12'),
 
 
-                    ], className="row"),
-
+                html.Div([
                     html.Div([
-                        dash_table.DataTable(
-                            id='title_table',
-                            columns=[{"name": 'Movie Title', "id": 'Title'},
-                                    {"name": 'IMDB Rank', "id": 'Rank'}] ,
-                            data=get_titles(genres_dict['Drama']['Title']),
-                            style_cell={'textAlign': 'left', 'fontSize':14, 'font-family':'sans-serif'},
-                            page_size=10,
-                            style_header={'fontWeight': 'bold'},)
-                    ], className="sd_dt_table"),
+                        dcc.Graph(
+                            id='decades_pie',
+                            figure=go.Figure(
+                            data=[go.Pie(labels=list(decade_dict.keys()), values=list(decade_dict.values()), hole=.3)],
+                            layout=go.Layout(title='Decades',  titlefont=dict(size=20))))
+                    ], className='chart-block'),
+                ], className='col-lg-4 col-md-6 col-sm-12'),
 
+                html.Div([ 
+                    html.Div([ # Container
 
-                ], className='sd_datatable'),
-            ], className='col-md-4 col-sm-12'),
+                        html.Div([ # Row
 
-        ], className="row"),
-    ], className="col-md-12")
+                            html.Div([
+                                #html.P('Choose The Genre to see Best Movies:'),
+                                dcc.Dropdown(
+                                    id='pick_genre',
+                                    options=genre_options,
+                                    value="Drama"),
+                            ], className='col-md-6'),
+
+                            html.Div([
+                                #html.P('Choose The Genre to see Best Movies:'),
+                                dcc.Dropdown(
+                                    id='pick_decade',
+                                    options=decade_options,
+                                    value=2010),
+
+                            ], className='col-md-6'),
+
+                        ], className="row"),
+
+                        html.Div([ # Row
+
+                            html.Div([
+                                dash_table.DataTable(
+                                    id='title_table',
+                                    columns=[{"name": 'Movie Title', "id": 'Title'},
+                                            {"name": 'IMDB Rank', "id": 'Rank'}] ,
+                                    data=get_titles(genres_dict['Drama']['Title']),
+                                    style_cell={'textAlign': 'left', 'fontSize':14, 'font-family':'sans-serif'},
+                                    page_size=10,
+                                    style_header={'fontWeight': 'bold'},)
+                            ], className="sd_dt_table col-md-12"),
+                            
+                        ], className="row"),
+
+                    ], className='container-fluid'),
+                ], className='col-lg-4 col-md-12'),
+
+            ], className="row"),
+        ], className="container-fluid"),
+    ], className="panel_body panel"),
 
 ], className="container")
 
