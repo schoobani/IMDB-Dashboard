@@ -32,7 +32,7 @@ def get_analysis(watchlist):
 
     def add_img_path(director):
         director = str(director).replace(" ","_")
-        director = "assets/img/"+director+".jpg"
+        director = "assets/img1/"+director+".jpg"
         return director
 
     watchlist["Year"] = watchlist["Year"].apply(get_decade)
@@ -267,62 +267,90 @@ html.Div([ # container
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.H5(children=str(top_directors[0][0]), id='director_1_name', className="card-title"),
-                            html.H6(children=str(top_directors[0][1]), id='director_1_count', className="card-text"),
-                            html.Img(src=get_director_img(top_directors[0][0]),id='director_1_img',className="card-img-top"),
-                        ], className="card-body"),
-                    ], className="card card-director"),
-                ], className='col-lg-2 col-md-4'),
+                            html.Div([
+                                html.Img(src=get_director_img(top_directors[0][0]),id='director_1_img',className="card-img-top"),
+                                html.H6(children=str(top_directors[0][1]), id='director_1_count', className="card-text"),
+                                html.H5(children=str(top_directors[0][0]), id='director_1_name', className="card-title"),
+                            ], className="card-body"),
+                        ], className="card card-director"),
+                    ], className='col-lg-3 col-md-4'),
+
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.Img(src=get_director_img(top_directors[1][0]),id='director_2_img', className="card-img-top"),
+                                html.H6(children=str(top_directors[1][1]), id='director_2_count', className="card-text"),
+                                html.H5(children=str(top_directors[1][0]), id='director_2_name', className="card-title"),
+                            ], className="card-body"),
+                        ], className="card card-director"),
+                    ], className='col-lg-3 col-md-4'),
+
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.Img(src=get_director_img(top_directors[2][0]),id='director_3_img', className="card-img-top"),
+                                html.H6(children=str(top_directors[2][1]), id='director_3_count', className="card-text"),
+                                html.H5(children=str(top_directors[2][0]), id='director_3_name', className="card-title"),
+                            ], className="card-body"),
+                        ], className="card card-director"),
+                    ], className='col-lg-3 col-md-4'),
+
+                    html.Div([
+                        html.Div([
+                            html.Div([
+                                html.Img(src=get_director_img(top_directors[3][0]),id='director_4_img', className="card-img-top"),
+                                html.H6(children=str(top_directors[3][1]), id='director_4_count', className="card-text"),
+                                html.H5(children=str(top_directors[3][0]), id='director_4_name',className="card-title"),
+                            ], className="card-body"),
+                        ], className="card card-director"),
+                    ], className='col-lg-3 col-md-4'),
+                ],className='row col-lg-6'),
+
 
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.H5(children=str(top_directors[1][0]), id='director_2_name', className="card-title"),
-                            html.H6(children=str(top_directors[1][1]), id='director_2_count', className="card-text"),
-                            html.Img(src=get_director_img(top_directors[1][0]),id='director_2_img', className="card-img-top"),
-                        ], className="card-body"),
-                    ], className="card card-director"),
-                ], className='col-lg-2 col-md-4'),
+                            html.Div([
+                                html.Img(src=get_director_img(top_directors[4][0]),id='director_5_img', className="card-img-top"),
+                                html.H6(children=str(top_directors[4][1]), id='director_5_count', className="card-text"),
+                                html.H5(children=str(top_directors[4][0]), id='director_5_name', className="card-title"),
+                            ], className="card-body"),
+                        ], className="card card-director"),
+                    ], className='col-lg-3 col-md-4'),
 
-                html.Div([
                     html.Div([
                         html.Div([
-                            html.H5(children=str(top_directors[2][0]), id='director_3_name', className="card-title"),
-                            html.H6(children=str(top_directors[2][1]), id='director_3_count', className="card-text"),
-                            html.Img(src=get_director_img(top_directors[2][0]),id='director_3_img', className="card-img-top"),
-                        ], className="card-body"),
-                    ], className="card card-director"),
-                ], className='col-lg-2 col-md-4'),
+                            html.Div([
+                                html.Img(src=get_director_img(top_directors[5][0]),id='director_6_img', className="card-img-top"),
+                                html.H6(children=str(top_directors[5][1]), id='director_6_count', className="card-text"),
+                                html.H5(children=str(top_directors[5][0]), id='director_6_name', className="card-title"),
+                            ], className="card-body"),
+                        ], className="card card-director"),
+                    ], className='col-lg-3 col-md-4'),
 
-                html.Div([
+
                     html.Div([
                         html.Div([
-                            html.H5(children=str(top_directors[3][0]), id='director_4_name',className="card-title"),
-                            html.H6(children=str(top_directors[3][1]), id='director_4_count', className="card-text"),
-                            html.Img(src=get_director_img(top_directors[3][0]),id='director_4_img', className="card-img-top")
-                        ], className="card-body"),
-                    ], className="card card-director"),
-                ], className='col-lg-2 col-md-4'),
+                            html.Div([
+                                html.Img(src=get_director_img(top_directors[6][0]),id='director_7_img', className="card-img-top"),
+                                html.H6(children=str(top_directors[6][1]), id='director_7_count', className="card-text"),
+                                html.H5(children=str(top_directors[6][0]), id='director_7_name', className="card-title"),
+                            ], className="card-body"),
+                        ], className="card card-director"),
+                    ], className='col-lg-3 col-md-4'),
 
-                html.Div([
+
                     html.Div([
                         html.Div([
-                            html.H5(children=str(top_directors[4][0]), id='director_5_name', className="card-title"),
-                            html.H6(children=str(top_directors[4][1]), id='director_5_count', className="card-text"),
-                            html.Img(src=get_director_img(top_directors[4][0]),id='director_5_img', className="card-img-top")
-                        ], className="card-body"),
-                    ], className="card card-director"),
-                ], className='col-lg-2 col-md-4'),
+                            html.Div([
+                                html.Img(src=get_director_img(top_directors[7][0]),id='director_8_img', className="card-img-top"),
+                                html.H6(children=str(top_directors[7][1]), id='director_8_count', className="card-text"),
+                                html.H5(children=str(top_directors[7][0]), id='director_8_name', className="card-title"),
+                            ], className="card-body"),
+                        ], className="card card-director"),
+                    ], className='col-lg-3 col-md-4'),
+                ],className='row col-lg-6'),
 
-                html.Div([
-                    html.Div([
-                        html.Div([
-                            html.H5(children=str(top_directors[5][0]), id='director_6_name', className="card-title"),
-                            html.H6(children=str(top_directors[5][1]), id='director_6_count', className="card-text"),
-                            html.Img(src=get_director_img(top_directors[5][0]),id='director_6_img', className="card-img-top")
-                        ], className="card-body"),
-                    ], className="card card-director"),
-                ], className='col-lg-2 col-md-4'),
 
             ], className='row'),
         ], className="container-fluid"),
@@ -431,7 +459,13 @@ html.Div([ # container
     dash.dependencies.Output('director_5_img', 'src'),
     dash.dependencies.Output('director_6_name', 'children'),
     dash.dependencies.Output('director_6_count', 'children'),
-    dash.dependencies.Output('director_6_img', 'src')],
+    dash.dependencies.Output('director_6_img', 'src'),
+    dash.dependencies.Output('director_7_name', 'children'),
+    dash.dependencies.Output('director_7_count', 'children'),
+    dash.dependencies.Output('director_7_img', 'src'),
+    dash.dependencies.Output('director_8_name', 'children'),
+    dash.dependencies.Output('director_8_count', 'children'),
+    dash.dependencies.Output('director_8_img', 'src')],
     [dash.dependencies.Input('pick_genre', 'value'),
     dash.dependencies.Input('pick_decade', 'value'),
     dash.dependencies.Input('upload-data', 'contents')],
@@ -458,16 +492,24 @@ def update_output(value_genre, value_decade, contents, filename):
                 get_director_img(top_directors[1][0]), #Director 1 Image
                 top_directors[2][0], #Director 3
                 top_directors[2][1], #Director 3 Movie Count
-                get_director_img(top_directors[2][0]), #Director 1 Image
+                get_director_img(top_directors[2][0]), #Director 3 Image
                 top_directors[3][0], #Director 4
                 top_directors[3][1], #Director 4 Movie Count
-                get_director_img(top_directors[3][0]), #Director 1 Image
+                get_director_img(top_directors[3][0]), #Director 4 Image
                 top_directors[4][0], #Director 5
                 top_directors[4][1], #Director 5 Movie Count
-                get_director_img(top_directors[4][0]), #Director 1 Image
+                get_director_img(top_directors[4][0]), #Director 5 Image
                 top_directors[5][0], #Director 6
                 top_directors[5][1], #Director 6 Movie Count
-                get_director_img(top_directors[5][0]), #Director 1 Image
+                get_director_img(top_directors[5][0]), #Director 6 Image
+                top_directors[6][0], #Director 6
+                top_directors[6][1], #Director 6 Movie Count
+                get_director_img(top_directors[6][0]), #Director 7 Image
+                top_directors[7][0], #Director 6
+                top_directors[7][1], #Director 6 Movie Count
+                get_director_img(top_directors[7][0]), #Director 7 Image
+
+
                 )
 
 #
