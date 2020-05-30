@@ -30,8 +30,14 @@ def get_analysis(watchlist):
     def split_genres(genres):
         return genres.split(",")
 
+    def add_img_path(director):
+        director = str(director).replace(" ","_")
+        director = "assets/img/"+director+".jpg"
+        return director
+
     watchlist["Year"] = watchlist["Year"].apply(get_decade)
     watchlist["Genres"] = watchlist["Genres"].apply(split_genres)
+    watchlist["img_path"] = watchlist["Directors"].apply(add_img_path)
 
     #Get genres and their decades
     genres_dict = dict()
@@ -70,7 +76,7 @@ def get_analysis(watchlist):
     total_movies = len(watchlist)
     general_info = [avg_rating_imdb, avg_my_rating, sum_run_time, total_movies]
 
-    return (general_info, decade_dict, genres_dict, genre_count_dict, top_directors)
+    return (general_info, decade_dict, genres_dict, genre_count_dict, watchlist, top_directors)
 
 
 #Parsing the Uploaded contents
@@ -82,6 +88,7 @@ def parse_contents(contents, filename):
     try:
         if 'csv' in filename:
             # Assume that the user uploaded a CSV file
+            global watchlist
             watchlist = pd.read_csv(io.StringIO(decoded.decode('ISO-8859-1')))
 
     except Exception as e:
@@ -90,14 +97,15 @@ def parse_contents(contents, filename):
             'There was an error processing this file. Please upload CSV file from provided by IMDB'
         ])
 
-    general_info, decade_dict, genres_dict, genre_count_dict, top_directors =  get_analysis(watchlist)
+
+    general_info, decade_dict, genres_dict, genre_count_dict, watchlist, top_directors =  get_analysis(watchlist)
     return (general_info, decade_dict, genres_dict, genre_count_dict, watchlist, top_directors)
 
 
 
 #Read the Data and Get the analysis
-watchlist = pd.read_csv("datasets/WATCHLIST_vahab.csv",encoding="ISO-8859-1")
-general_info, decade_dict, genres_dict, genre_count_dict, top_directors=  get_analysis(watchlist)
+watchlist = pd.read_csv("datasets/WATCHLIST_pouria.csv",encoding="ISO-8859-1")
+general_info, decade_dict, genres_dict, genre_count_dict, watchlist, top_directors=  get_analysis(watchlist)
 
 
 #Get Genres Options
@@ -157,7 +165,9 @@ def get_titles(genres_dict, genre, decade):
     return sorted(title_data, key=itemgetter('Rank'), reverse=True)
 
 
-
+#Get image path of a director
+def get_director_img(director_name):
+    return list(watchlist.loc[watchlist['Directors']==director_name]['img_path'])[0]
 
 
 ######### -------- create the Dashboard -------- #########
@@ -257,8 +267,9 @@ html.Div([ # container
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.H4("1", className="card-title"),
-                            html.H6(children=str(top_directors[0][0]), id='director_1_name', className="card-text"),
+                            html.H5(children=str(top_directors[0][0]), id='director_1_name', className="card-title"),
+                            html.H6(children=str(top_directors[0][1]), id='director_1_count', className="card-text"),
+                            html.Img(src=get_director_img(top_directors[0][0]),id='director_1_img',className="card-img-top"),
                         ], className="card-body"),
                     ], className="card card-director"),
                 ], className='col-lg-2 col-md-4'),
@@ -266,8 +277,9 @@ html.Div([ # container
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.H4("2", className="card-title"),
-                            html.H6(children=str(top_directors[1][0]), id='director_2_name', className="card-text"),
+                            html.H5(children=str(top_directors[1][0]), id='director_2_name', className="card-title"),
+                            html.H6(children=str(top_directors[1][1]), id='director_2_count', className="card-text"),
+                            html.Img(src=get_director_img(top_directors[1][0]),id='director_2_img', className="card-img-top"),
                         ], className="card-body"),
                     ], className="card card-director"),
                 ], className='col-lg-2 col-md-4'),
@@ -275,8 +287,9 @@ html.Div([ # container
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.H4("3", className="card-title"),
-                            html.H6(children=str(top_directors[2][0]), id='director_3_name', className="card-text"),
+                            html.H5(children=str(top_directors[2][0]), id='director_3_name', className="card-title"),
+                            html.H6(children=str(top_directors[2][1]), id='director_3_count', className="card-text"),
+                            html.Img(src=get_director_img(top_directors[2][0]),id='director_3_img', className="card-img-top"),
                         ], className="card-body"),
                     ], className="card card-director"),
                 ], className='col-lg-2 col-md-4'),
@@ -284,8 +297,9 @@ html.Div([ # container
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.H4("4", className="card-title"),
-                            html.H6(children=str(top_directors[3][0]), id='director_4_name', className="card-text"),
+                            html.H5(children=str(top_directors[3][0]), id='director_4_name',className="card-title"),
+                            html.H6(children=str(top_directors[3][1]), id='director_4_count', className="card-text"),
+                            html.Img(src=get_director_img(top_directors[3][0]),id='director_4_img', className="card-img-top")
                         ], className="card-body"),
                     ], className="card card-director"),
                 ], className='col-lg-2 col-md-4'),
@@ -293,8 +307,9 @@ html.Div([ # container
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.H4("5", className="card-title"),
-                            html.H6(children=str(top_directors[4][0]), id='director_5_name', className="card-text"),
+                            html.H5(children=str(top_directors[4][0]), id='director_5_name', className="card-title"),
+                            html.H6(children=str(top_directors[4][1]), id='director_5_count', className="card-text"),
+                            html.Img(src=get_director_img(top_directors[4][0]),id='director_5_img', className="card-img-top")
                         ], className="card-body"),
                     ], className="card card-director"),
                 ], className='col-lg-2 col-md-4'),
@@ -302,8 +317,9 @@ html.Div([ # container
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.H4("6", className="card-title"),
-                            html.H6(children=str(top_directors[6][0]), id='director_6_name', className="card-text"),
+                            html.H5(children=str(top_directors[5][0]), id='director_6_name', className="card-title"),
+                            html.H6(children=str(top_directors[5][1]), id='director_6_count', className="card-text"),
+                            html.Img(src=get_director_img(top_directors[5][0]),id='director_6_img', className="card-img-top")
                         ], className="card-body"),
                     ], className="card card-director"),
                 ], className='col-lg-2 col-md-4'),
@@ -348,7 +364,7 @@ html.Div([ # container
                                 dcc.Dropdown(
                                     id='pick_genre',
                                     options=genre_options,
-                                    value="Drama"),
+                                    value="all"),
                             ], className='col-md-6'),
 
                             html.Div([
@@ -356,7 +372,7 @@ html.Div([ # container
                                 dcc.Dropdown(
                                     id='pick_decade',
                                     options=decade_options,
-                                    value=2010),
+                                    value='all'),
 
                             ], className='col-md-6'),
 
@@ -399,11 +415,23 @@ html.Div([ # container
     dash.dependencies.Output('decades_pie', 'figure'),
     dash.dependencies.Output('title_table', 'data'),
     dash.dependencies.Output('director_1_name', 'children'),
+    dash.dependencies.Output('director_1_count', 'children'),
+    dash.dependencies.Output('director_1_img', 'src'),
     dash.dependencies.Output('director_2_name', 'children'),
+    dash.dependencies.Output('director_2_count', 'children'),
+    dash.dependencies.Output('director_2_img', 'src'),
     dash.dependencies.Output('director_3_name', 'children'),
+    dash.dependencies.Output('director_3_count', 'children'),
+    dash.dependencies.Output('director_3_img', 'src'),
     dash.dependencies.Output('director_4_name', 'children'),
+    dash.dependencies.Output('director_4_count', 'children'),
+    dash.dependencies.Output('director_4_img', 'src'),
     dash.dependencies.Output('director_5_name', 'children'),
-    dash.dependencies.Output('director_6_name', 'children')],
+    dash.dependencies.Output('director_5_count', 'children'),
+    dash.dependencies.Output('director_5_img', 'src'),
+    dash.dependencies.Output('director_6_name', 'children'),
+    dash.dependencies.Output('director_6_count', 'children'),
+    dash.dependencies.Output('director_6_img', 'src')],
     [dash.dependencies.Input('pick_genre', 'value'),
     dash.dependencies.Input('pick_decade', 'value'),
     dash.dependencies.Input('upload-data', 'contents')],
@@ -413,7 +441,7 @@ def update_output(value_genre, value_decade, contents, filename):
         raise PreventUpdate
 
     if contents is not None:
-        global watchlist
+        #global watchlist
         general_info, decade_dict, genres_dict, genre_count_dict, watchlist, top_directors =  parse_contents(contents, filename)
         return (general_info[3], #Total Movies
                 general_info[2], #Total Minutes
@@ -422,12 +450,24 @@ def update_output(value_genre, value_decade, contents, filename):
                 {"data": [go.Pie(labels=list(genre_count_dict.keys())[:10], values=list(genre_count_dict.values())[:10], hole=.3)]}, #Genres Pie Chart
                 {"data": [go.Pie(labels=list(decade_dict.keys()), values=list(decade_dict.values()), hole=.3)]}, #Decades Pie Chart
                 get_titles(genres_dict, value_genre, value_decade), #Titles Data Table
-                top_directors[0][0], #Director 1
+                top_directors[0][0], #Director 1 name
+                top_directors[0][1], #Director 1 Movie Count
+                get_director_img(top_directors[0][0]), #Director 1 Image
                 top_directors[1][0], #Director 2
+                top_directors[1][1], #Director 2 Movie Count
+                get_director_img(top_directors[1][0]), #Director 1 Image
                 top_directors[2][0], #Director 3
+                top_directors[2][1], #Director 3 Movie Count
+                get_director_img(top_directors[2][0]), #Director 1 Image
                 top_directors[3][0], #Director 4
+                top_directors[3][1], #Director 4 Movie Count
+                get_director_img(top_directors[3][0]), #Director 1 Image
                 top_directors[4][0], #Director 5
+                top_directors[4][1], #Director 5 Movie Count
+                get_director_img(top_directors[4][0]), #Director 1 Image
                 top_directors[5][0], #Director 6
+                top_directors[5][1], #Director 6 Movie Count
+                get_director_img(top_directors[5][0]), #Director 1 Image
                 )
 
 #
