@@ -100,6 +100,15 @@ def get_movies(watchlist):
     return movie_list
 
 
+def top_directors(watchlist):
+    top_directors = watchlist.groupby(['Directors']).agg({'Title':"count"}).to_dict()['Title']
+    top_directors = {k: top_directors[k] for k in sorted(top_directors, key=top_directors.get, reverse=True)}
+    top_directors = list(top_directors.items())
+
+    print(top_directors[:12])
+
+    return None
+
 
 
 @home.route('/')
@@ -107,6 +116,8 @@ def index():
 
     watchlist = pd.read_csv("datasets/WATCHLIST_vahab.csv",encoding="ISO-8859-1")
     genres = generate_genres(watchlist)
+
+    top_directors(watchlist)
 
     general = [
         {
