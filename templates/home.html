@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'general_info.html' %}
+<div class="row">
+    <div class="col-lg-8 col-md-12">
+        {% include 'graphics.html' %}
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+        <section class="stats-datatable sect">
+            <h2 class="sect-title">Movies by genres</h2>
+        </section>
+    </div>
+    <div class="col-lg-12 col-md-6 col-sm-12">
+        <section class="top-directors sect">
+            <h2 class="sect-title">Top Directors</h2>
+        </section>
+    </div>
+</div>
+{% endblock %}
