@@ -87,13 +87,26 @@ def decade_stats(watchlist):
     return decade_chart_data
 
 
+def get_movies(watchlist):
+
+    movie_list = []
+    for _, movie in watchlist.iterrows():
+        movie_list.append({
+            "title": movie["Title"],
+            "imdb": movie["IMDb Rating"],
+            "rates": movie["Num Votes"]
+        })
+
+    return movie_list
+
+
+
+
 @home.route('/')
 def index():
 
     watchlist = pd.read_csv("datasets/WATCHLIST_vahab.csv",encoding="ISO-8859-1")
     genres = generate_genres(watchlist)
-
-    decade_stats(watchlist)
 
     general = [
         {
@@ -121,5 +134,6 @@ def index():
     return render_template("home.html", 
         stats=general, 
         genresData=json.dumps(top10_genres_stats(genres)), 
-        decadesData=json.dumps(decade_stats(watchlist))
+        decadesData=json.dumps(decade_stats(watchlist)),
+        movieList=json.dumps(get_movies(watchlist))
     )
