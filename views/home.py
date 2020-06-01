@@ -76,7 +76,7 @@ def top10_genres_stats(genres):
 def decade_stats(watchlist):
     decade_dict = watchlist.groupby(['Year']).agg({'Title':"count"}).to_dict()['Title']
     total_count = sum(decade_dict.values())
-    
+
     decade_chart_data = []
     for year in decade_dict.keys():
         decade_chart_data.append({
@@ -93,8 +93,8 @@ def get_movies(watchlist):
     for _, movie in watchlist.iterrows():
         movie_list.append({
             "title": movie["Title"],
-            "imdb": movie["IMDb Rating"],
-            "rates": movie["Num Votes"]
+            "IMDB Rating": movie["IMDb Rating"],
+            "Rating Count": movie["Num Votes"],
         })
 
     return movie_list
@@ -142,9 +142,9 @@ def index():
         }
     ]
 
-    return render_template("home.html", 
-        stats=general, 
-        genresData=json.dumps(top10_genres_stats(genres)), 
+    return render_template("home.html",
+        stats=general,
+        genresData=json.dumps(top10_genres_stats(genres)),
         decadesData=json.dumps(decade_stats(watchlist)),
         movieList=json.dumps(get_movies(watchlist))
     )

@@ -5,8 +5,8 @@
             <thead>
                 <tr>
                     <th width="50%">Movie</th>
-                    <th width="25%">IMDB</th>
-                    <th width="25%">Rates</th>
+                    <th width="25%">IMDB Ranking</th>
+                    <th width="25%">Rates Count</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,8 +24,8 @@
             data: {{ movieList|safe }},
             columns: [
                 { data: 'title' },
-                { data: 'imdb' },
-                { data: 'rates' }
+                { data: 'IMDB Rating' },
+                { data: 'Rating Count' }
             ]
         })
     });
