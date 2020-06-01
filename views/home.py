@@ -27,6 +27,17 @@ def avg_rating_imdb(watchlist):
 def avg_user_rating(watchlist):
     return "%.2f" %np.mean(watchlist[watchlist['Your Rating'].notnull()]['Your Rating'])
 
+# #analysis and data
+# def get_analysis(watchlist):
+
+
+#     def add_img_path(director):
+#         director = str(director).replace(" ","_")
+#         director = "assets/img1/"+director+".jpg"
+#         return director
+#
+#     watchlist["img_path"] = watchlist["Directors"].apply(add_img_path)
+#
 
 def generate_genres(watchlist):
 
@@ -41,7 +52,19 @@ def generate_genres(watchlist):
 
     watchlist["Title"] = watchlist["Title"].apply(clear_title)
     watchlist["Year"] = watchlist["Year"].apply(get_decade)
-    watchlist["Genres"] = watchlist["Genres"].apply(split_genres)
+    #watchlist["Genres"] = watchlist["Genres"].apply(split_genres)
+
+    genres_dict = dict()
+    for i in range(len(watchlist["Genres"])):
+            watchlist['Title'].loc[i] = watchlist['Title'].loc[i].replace("'","")
+            for k in watchlist["Genres"].loc[i]:
+                if k[0] == " ":
+                    k = k.replace(" ","")
+                if k not in genres_dict.keys():
+                    genres_dict[k] = {'count':0,'movies':{watchlist["Title"].iloc[i]:0}}
+                genres_dict[k]['count'] = genres_dict[k]['count']  +1
+                genres_dict[k]['movies'][watchlist["Title"].iloc[i]] = watchlist["Year"].iloc[i]
+
 
     genres = dict()
     for _, movie in watchlist.iterrows():
@@ -54,8 +77,43 @@ def generate_genres(watchlist):
                 genres[genre] = {}
                 genres[genre] = 0
 
-    print (genres)
+    #print (genres_dict)
     return genres
+
+
+
+
+#
+def generate_genres_year(watchlist):
+
+    def clear_title(title):
+        return title.replace("'", "")
+
+    def get_decade(year):
+        return year - year % 10
+
+    def split_genres(genres):
+        return genres.split(",")
+
+    watchlist["Title"] = watchlist["Title"].apply(clear_title)
+    watchlist["Year"] = watchlist["Year"].apply(get_decade)
+    watchlist["Genres"] = watchlist["Genres"].apply(split_genres)
+
+    genres_dict = dict()
+    for i in range(len(watchlist["Genres"])):
+            watchlist['Title'].loc[i] = watchlist['Title'].loc[i].replace("'","")
+            for k in watchlist["Genres"].loc[i]:
+                if k[0] == " ":
+                    k = k.replace(" ","")
+                if k not in genres_dict.keys():
+                    genres_dict[k] = {'count':0,'movies':{watchlist["Title"].iloc[i]:0}}
+                genres_dict[k]['count'] = genres_dict[k]['count']  +1
+                genres_dict[k]['movies'][watchlist["Title"].iloc[i]] = watchlist["Year"].iloc[i]
+
+    #print (genres_dict)
+    return genres_dict
+
+
 
 
 def top10_genres_stats(genres):
@@ -74,6 +132,7 @@ def top10_genres_stats(genres):
     return top10_chart_data
 
 
+
 def decade_stats(watchlist):
     decade_dict = watchlist.groupby(['Year']).agg({'Title':"count"}).to_dict()['Title']
     total_count = sum(decade_dict.values())
@@ -88,24 +147,23 @@ def decade_stats(watchlist):
     return decade_chart_data
 
 
-def get_movies(watchlist):
 
-    movie_list = []
-    for _, movie in watchlist.iterrows():
-        movie_list.append({
-            "title": movie["Title"],
-            "IMDB Rating": movie["IMDb Rating"],
-            "Rating Count": movie["Num Votes"],
-        })
-
-    return movie_list
-
-
+# def get_movies(watchlist):
+#
+#     movie_list = []
+#     for _, movie in watchlist.iterrows():
+#         movie_list.append({
+#             "title": movie["Title"],
+#             "IMDB Rating": movie["IMDb Rating"],
+#             "Rating Count": movie["Num Votes"],
+#         })
+#
+#     return movie_list
 
 
 
 #Get movie titles in each genre
-def get_titles(genres_dict, genre, decade):
+def get_titles(genres_dict, genre, decade, watchlist):
     #All genres and all decades
     title_list = []
 
@@ -137,13 +195,9 @@ def get_titles(genres_dict, genre, decade):
                         title_list.append(k2)
 
 
-    temp_watchlist = pd.DataFrame()
+    temp_watchlist = pd.DataFrame(columns=list(watchlist.columns))
     for i in range(len(title_list)):
-        temp_watchlist.append(watchlist.loc[watchlist['Title']== title_list[i]])
-        #fans = float((watchlist.loc[watchlist['Title']== title_list[i]]['Num Votes']).to_list()[0])
-        #fans = str("%.0f" %(fans/1000))+" k"
-        #temp_dict = {'Title':title_list[i], 'Rank': rank, 'Fans':fans}
-        #title_data.append(temp_dict)
+        temp_watchlist = pd.concat([temp_watchlist, watchlist.loc[watchlist['Title']== title_list[i]]])
 
     movie_list = []
     for _, movie in temp_watchlist.iterrows():
@@ -175,7 +229,7 @@ def top_directors(watchlist):
 @home.route('/')
 def index():
 
-    watchlist = pd.read_csv("datasets/WATCHLIST_vahab.csv",encoding="ISO-8859-1")
+    watchlist = pd.read_csv("datasets/WATCHLIST_sara.csv",encoding="ISO-8859-1")
     genres = generate_genres(watchlist)
 
     top_directors(watchlist)
@@ -207,5 +261,5 @@ def index():
         stats=general,
         genresData=json.dumps(top10_genres_stats(genres)),
         decadesData=json.dumps(decade_stats(watchlist)),
-        movieList=json.dumps(get_movies(watchlist))
+        movieList=json.dumps(get_titles(generate_genres_year(watchlist), 'all', 'all', watchlist))
     )
