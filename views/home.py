@@ -54,6 +54,7 @@ def generate_genres(watchlist):
                 genres[genre] = {}
                 genres[genre] = 0
 
+    print (genres)
     return genres
 
 
@@ -98,6 +99,66 @@ def get_movies(watchlist):
         })
 
     return movie_list
+
+
+
+
+
+#Get movie titles in each genre
+def get_titles(genres_dict, genre, decade):
+    #All genres and all decades
+    title_list = []
+
+    if genre == 'all' and decade == 'all':
+        title_list = list(watchlist['Title'])
+
+    #Specific Genre and all decades
+    if decade == 'all' and genre != 'all':
+        for k1 in genres_dict.keys():
+            if k1 == genre :
+                for k2 in genres_dict[k1]['movies']:
+                    title_list.append(k2)
+
+    #All genres and Specific decades
+    if decade != 'all' and genre == 'all':
+        for k1 in genres_dict.keys():
+            for k2 in genres_dict[k1]['movies']:
+                if genres_dict[k1]['movies'][k2] == decade:
+                    title_list.append(k2)
+                    title_list = list(set(title_list))
+
+
+    #Specific genres and Specific decades
+    if decade != 'all' and genre != 'all':
+        for k1 in genres_dict.keys():
+            if k1 == genre :
+                for k2 in genres_dict[k1]['movies']:
+                    if genres_dict[k1]['movies'][k2] == decade:
+                        title_list.append(k2)
+
+
+    temp_watchlist = pd.DataFrame()
+    for i in range(len(title_list)):
+        temp_watchlist.append(watchlist.loc[watchlist['Title']== title_list[i]])
+        #fans = float((watchlist.loc[watchlist['Title']== title_list[i]]['Num Votes']).to_list()[0])
+        #fans = str("%.0f" %(fans/1000))+" k"
+        #temp_dict = {'Title':title_list[i], 'Rank': rank, 'Fans':fans}
+        #title_data.append(temp_dict)
+
+    movie_list = []
+    for _, movie in temp_watchlist.iterrows():
+        movie_list.append({
+            "title": movie["Title"],
+            "IMDB Rating": movie["IMDb Rating"],
+            "Rating Count": movie["Num Votes"],
+        })
+
+    return movie_list
+
+
+
+
+
 
 
 def top_directors(watchlist):
