@@ -9,3 +9,7 @@ instance/*
 __pycache__/
 *.py[cod]
 *$py.class
+
+### IMDB Dashboard
+.ipynb_checkpoints/
+*.ipynb

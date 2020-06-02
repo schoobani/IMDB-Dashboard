@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-import requests
+# import requests
 import json
 import csv
 
@@ -62,7 +62,7 @@ def generate_genres(watchlist):
                 genres[genre] = 0
 
     #print (genres_dict)
-    print (genres)
+    # print (genres)
     return genres
 
 
@@ -112,6 +112,10 @@ def top10_genres_stats(genres):
     return top10_chart_data
 
 
+def decade_list(watchlist):
+    decade_dict = watchlist.groupby(['Year']).agg({'Title':"count"}).to_dict()['Title']
+    return list(decade_dict.keys())
+
 def decade_stats(watchlist):
     decade_dict = watchlist.groupby(['Year']).agg({'Title':"count"}).to_dict()['Title']
     total_count = sum(decade_dict.values())
@@ -137,7 +141,7 @@ def get_titles(genres_dict, genre, decade, watchlist):
     #Specific Genre and all decades
     if decade == 'all' and genre != 'all':
         for k1 in genres_dict.keys():
-            if k1 == genre :
+            if str(k1) == genre :
                 for k2 in genres_dict[k1]['movies']:
                     title_list.append(k2)
 
@@ -145,7 +149,7 @@ def get_titles(genres_dict, genre, decade, watchlist):
     if decade != 'all' and genre == 'all':
         for k1 in genres_dict.keys():
             for k2 in genres_dict[k1]['movies']:
-                if genres_dict[k1]['movies'][k2] == decade:
+                if str(genres_dict[k1]['movies'][k2]) == decade:
                     title_list.append(k2)
                     title_list = list(set(title_list))
 
@@ -153,9 +157,9 @@ def get_titles(genres_dict, genre, decade, watchlist):
     #Specific genres and Specific decades
     if decade != 'all' and genre != 'all':
         for k1 in genres_dict.keys():
-            if k1 == genre :
+            if str(k1) == genre :
                 for k2 in genres_dict[k1]['movies']:
-                    if genres_dict[k1]['movies'][k2] == decade:
+                    if str(genres_dict[k1]['movies'][k2]) == decade:
                         title_list.append(k2)
 
 
@@ -181,15 +185,26 @@ def top_directors(watchlist):
     top_directors = {k: top_directors[k] for k in sorted(top_directors, key=top_directors.get, reverse=True)}
     top_directors = list(top_directors.items())
 
-    print(top_directors[:12])
+    # print(top_directors[:12])
 
     return None
 
 
 
+@home.route('/get-movies/', methods=['POST'])
+def get_movies():
+
+    if request.method != "POST":
+        return None
+
+    sel_genre = request.form.get('genre')
+    sel_decade = request.form.get('decade')
+
+    return json.dumps(get_titles(generate_genres_year(watchlist), str(sel_genre), str(sel_decade), watchlist))
+
 @home.route('/')
 def index():
-
+    global watchlist
     watchlist = pd.read_csv("datasets/WATCHLIST_sara.csv",encoding="ISO-8859-1")
     genres = generate_genres(watchlist)
 
@@ -222,5 +237,7 @@ def index():
         stats=general,
         genresData=json.dumps(top10_genres_stats(genres)),
         decadesData=json.dumps(decade_stats(watchlist)),
+        genres = list(generate_genres_year(watchlist).keys()),
+        decades = decade_list(watchlist),
         movieList=json.dumps(get_titles(generate_genres_year(watchlist), 'all', 'all', watchlist))
     )
