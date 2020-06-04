@@ -24,15 +24,23 @@ def avg_rating_imdb(watchlist):
 
 
 def avg_user_rating(watchlist):
-    return "%.2f" %np.mean(watchlist[watchlist['Your Rating'].notnull()]['Your Rating'])
+    try:
+        return "%.2f" %np.mean(watchlist[watchlist['Your Rating'].notnull()]['Your Rating'])
+    except:
+        return 0
+
+def director_count(watchlist):
+    total_directors = watchlist.groupby(['Directors']).agg({'Title':"count"}).to_dict()['Title']
+    return len(total_directors)
+    #return "%.2f" %np.mean(watchlist[watchlist['Your Rating'].notnull()]['Your Rating'])
 
 
 def add_img_path(director):
-    director = str(director).replace(" ","_")
-    director = "img/"+director+".jpg"
-    return director
+    img_path = str(director).replace(" ","_")
+    img_path = img_path+".jpg"
+    #watchlist["img_path"] = watchlist["Directors"].apply(add_img_path)
+    return img_path
 
-    watchlist["img_path"] = watchlist["Directors"].apply(add_img_path)
 
 
 def generate_genres(watchlist):
@@ -183,11 +191,13 @@ def get_titles(genres_dict, genre, decade, watchlist):
 def top_directors(watchlist):
     top_directors = watchlist.groupby(['Directors']).agg({'Title':"count"}).to_dict()['Title']
     top_directors = {k: top_directors[k] for k in sorted(top_directors, key=top_directors.get, reverse=True)}
-    top_directors = list(top_directors.items())
+    #top_directors = list(top_directors.items())
+    top_directors_list = []
+    for k in list(top_directors.keys())[:12]:
+        temp_director_dict = {'name':k, 'count':top_directors[k],'image_url':add_img_path(k)}
+        top_directors_list.append(temp_director_dict)
 
-    # print(top_directors[:12])
-
-    return None
+    return top_directors_list
 
 
 
@@ -205,7 +215,7 @@ def get_movies():
 @home.route('/')
 def index():
     global watchlist
-    watchlist = pd.read_csv("datasets/WATCHLIST_sara.csv",encoding="ISO-8859-1")
+    watchlist = pd.read_csv("datasets/WATCHLIST_saeed.csv",encoding="ISO-8859-1")
     genres = generate_genres(watchlist)
 
     top_directors(watchlist)
@@ -214,6 +224,16 @@ def index():
         {
             'title': 'Total Movies',
             'number': count_movies(watchlist),
+            'icon': 'movie',
+        },
+        {
+            'title': 'Total Directors',
+            'number': director_count(watchlist),
+            'icon': 'movie',
+        },
+        {
+            'title': 'Total Genres',
+            'number': len(list(generate_genres_year(watchlist).keys())),
             'icon': 'movie',
         },
         {
@@ -239,5 +259,6 @@ def index():
         decadesData=json.dumps(decade_stats(watchlist)),
         genres = list(generate_genres_year(watchlist).keys()),
         decades = decade_list(watchlist),
-        movieList=json.dumps(get_titles(generate_genres_year(watchlist), 'all', 'all', watchlist))
+        movieList=json.dumps(get_titles(generate_genres_year(watchlist), 'all', 'all', watchlist)),
+        top_directors = top_directors(watchlist)
     )

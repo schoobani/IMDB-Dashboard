@@ -140,3 +140,9 @@ h1, h2, h3, h4, h5, h6 {
 .datatable-block #movies___byGenres_filter.dataTables_filter {
     display: none !important;
 }
+
+
+.card-img{
+ width: 100%!important;
+ object-fit: cover;
+}
