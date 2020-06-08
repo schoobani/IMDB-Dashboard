@@ -1,10 +1,14 @@
 from flask import Blueprint, render_template, request
+from werkzeug.utils import secure_filename
+
 # import requests
 import json
 import csv
 
+import os
 import pandas as pd
 import numpy as np
+watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
 
 
 home = Blueprint('home', __name__)
@@ -200,7 +204,6 @@ def top_directors(watchlist):
     return top_directors_list
 
 
-
 @home.route('/get-movies/', methods=['POST'])
 def get_movies():
 
@@ -212,10 +215,13 @@ def get_movies():
 
     return json.dumps(get_titles(generate_genres_year(watchlist), str(sel_genre), str(sel_decade), watchlist))
 
+
+
+
 @home.route('/')
 def index():
-    global watchlist
-    watchlist = pd.read_csv("datasets/WATCHLIST_saeed.csv",encoding="ISO-8859-1")
+    # global watchlist
+    # watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
     genres = generate_genres(watchlist)
 
     top_directors(watchlist)
@@ -262,3 +268,89 @@ def index():
         movieList=json.dumps(get_titles(generate_genres_year(watchlist), 'all', 'all', watchlist)),
         top_directors = top_directors(watchlist)
     )
+
+
+def allowed_file(filename):
+
+    # We only want files with a . in the filename
+    if not "." in filename:
+        return False
+
+    # Split the extension from the filename
+
+
+    # Check if the extension is in ALLOWED_IMAGE_EXTENSIONS
+    if ext.upper() in ['csv']:
+        return True
+    else:
+        return False
+
+
+
+
+@home.route("/", methods=["GET", "POST"])
+def upload_file():
+
+    if request.method == "POST":
+        if request.files:
+
+            file = request.files["file"]
+            filename = secure_filename(file.filename)
+            ext = filename.rsplit(".", 1)[1]
+
+            if ext.lower() == 'csv':
+                file.save(os.path.join("datasets/FILE_UPLOADS", file.filename))
+                global watchlist
+                watchlist = pd.read_csv("datasets/FILE_UPLOADS/{}".format(file.filename),encoding="ISO-8859-1")
+
+            else:
+                print ("File is not correct")
+                watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
+
+
+            genres = generate_genres(watchlist)
+
+            top_directors(watchlist)
+
+            general = [
+                {
+                    'title': 'Total Movies',
+                    'number': count_movies(watchlist),
+                    'icon': 'movie',
+                },
+                {
+                    'title': 'Total Directors',
+                    'number': director_count(watchlist),
+                    'icon': 'movie',
+                },
+                {
+                    'title': 'Total Genres',
+                    'number': len(list(generate_genres_year(watchlist).keys())),
+                    'icon': 'movie',
+                },
+                {
+                    'title': 'Total Minutes',
+                    'number': get_total_minutes(watchlist),
+                    'icon': 'av_timer',
+                },
+                {
+                    'title': 'IMDB Ranking',
+                    'number': avg_rating_imdb(watchlist),
+                    'icon': 'theaters',
+                },
+                {
+                    'title': 'User ranking',
+                    'number': avg_user_rating(watchlist),
+                    'icon': 'analytics',
+                }
+            ]
+
+            return render_template("home.html",
+                stats=general,
+                genresData=json.dumps(top10_genres_stats(genres)),
+                decadesData=json.dumps(decade_stats(watchlist)),
+                genres = list(generate_genres_year(watchlist).keys()),
+                decades = decade_list(watchlist),
+                movieList=json.dumps(get_titles(generate_genres_year(watchlist), 'all', 'all', watchlist)),
+                top_directors = top_directors(watchlist)
+            )

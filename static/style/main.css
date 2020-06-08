@@ -48,6 +48,13 @@ h1, h2, h3, h4, h5, h6 {
     float: left;
 }
 
+.page-topbar .upload {
+    position: relative;
+    float: right;
+}
+
+
+
 .page-topbar .quick-area::before {
     position: absolute;
     top: 0;
