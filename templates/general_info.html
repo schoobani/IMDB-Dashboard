@@ -1,0 +1,22 @@
+<section class="imdb-info-stats sect">
+    <h2 class="sect-title">General Info</h2>
+    <div class="row">
+        {% for stat in stats %}
+        <div class="col-lg-2 col md-6 col-sm-6">
+            <div class="info-card">
+                <div class="card-body">
+                    <div class="card-icon">
+                        <span class="material-icons">
+                            {{ stat.icon }}
+                        </span>
+                    </div>
+                    <div class="d-inlineb">
+                        <h3 class="card-title">{{ stat.number }}</h3>
+                        <span class="card-text">{{ stat.title }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>

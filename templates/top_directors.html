@@ -1,0 +1,16 @@
+<section class="top-directors sect">
+    <h2 class="sect-title">Top Directors</h2>
+    <div class="row directors">
+        {% for director in top_directors %}
+        <div class="col-lg-1 col md-6 col-sm-6">
+            <div class="director-card">
+                <div class="card-body">
+                    <img src="{{ url_for('static', filename='img/dir_img/'+director.image_url) }}" alt="{{image_url}}"  class="rounded-circle card-img-top card-img img-fluid">
+                    <h3 class="card-badge">{{ director.count }}</h3>
+                    <h4 class="card-title">{{ director.name }}</h4>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>

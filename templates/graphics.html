@@ -1,0 +1,51 @@
+<section class="stats-charts sect">
+    <h2 class="sect-title">Movie Genres of your Watchlist</h2>
+    <div class="charts-block">
+        <div class="row">
+            <div class="col-md-12">
+                <figure class="highcharts-figure">
+                    <div id="top10"></div>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+Highcharts.chart('top10', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Top 10 Genres'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Genre Percentage',
+        colorByPoint: true,
+        data: {{ genresData|safe }}
+    }]
+});
+
+</script>

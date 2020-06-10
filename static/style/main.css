@@ -1,0 +1,223 @@
+body {
+    font-family: 'Ubuntu', 'Open Sans', Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 23px;
+    color: #757575;
+    background-color: #efefef;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0px;
+    font-weight: 400;
+    color: #505458;
+}
+
+.d-inlineb {
+    display: inline-block;
+}
+.page-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1999;
+    width: 100%;
+    max-height: 60px;
+    min-height: 60px;
+    background-color: #37474f;
+    box-shadow: 0 1px 3px rgba(0,0,0,0),0 2px 2px rgba(0,0,0,0.1);
+}
+
+.page-topbar .logo-area {
+    position: relative;
+    display: block;
+    float: left;
+    width: 200px;
+    min-height: 60px;
+    background-color: #ff6e40;
+}
+
+.page-topbar .logo-area {
+    background-image: url('../img/logo.png');
+    background-repeat: no-repeat;
+}
+
+.page-topbar .quick-area {
+    position: relative;
+    float: left;
+}
+
+.page-topbar .upload {
+    position: relative;
+    float: left;
+    margin: 10PX;
+}
+
+.custom-file-input{
+    float: left;
+}
+
+.btn-primary{
+    float: right;
+}
+
+.upload{
+    float: right !important;
+}
+
+.page-topbar .quick-area::before {
+    position: absolute;
+    top: 0;
+    left: -18px;
+    z-index: 1;
+    display: block;
+    width: 40px;
+    height: 60px;
+    background-color: #ff6e40;
+    content: " ";
+    transform: skewX(30deg);
+}
+
+
+.main-wrapper {
+    display: inline-block;
+    width: 100%;
+    padding: 0 10px;
+    margin-top: 60px;
+}
+
+.content-wrapper {
+    display: inline-block;
+    width: 100%;
+    padding: 30px 20px 0 20px;
+}
+
+.sect {
+    border-top: 2px solid white;
+    padding: 20px 0;
+    margin-bottom: 10px;
+}
+
+.sect-title {
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #b2b2b2;
+}
+
+.sect-title::before {
+    display: inline-block;
+    content: '>';
+    margin-right: 5px;
+}
+
+.info-card {
+    position: relative;
+    padding: 5px 20px;
+    background-color: #fff;
+    box-shadow: 0px 3px 3px 1px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+.director-card {
+    position: relative;
+    padding: 5px 15px;
+    background-color: #fff;
+    box-shadow: 0px 3px 3px 1px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    min-height: 200px;
+}
+
+.director-card .card-body .card-title {
+    margin-top: 10px;
+}
+
+.director-card .card-body .card-text{
+    text-align: center;
+}
+
+.director-card .card-body .card-badge-head{
+    text-align: center;
+}
+
+
+
+.top-directors .directors {
+    margin-top: 50px;
+}
+/*
+.director-card .card-body .card-badge {
+  position:absolute;
+  top:-10px;
+  left:-15px;
+} */
+
+.card-img{
+ width: 100%!important;
+ position: relative;
+ border-radius: 50%;
+ top: -30px;
+ border:7px solid #ffffff;
+}
+
+
+
+/* .director-card .card-body {
+    padding: 10px 20px;
+    position: relative;
+    z-index: 2;
+} */
+
+
+
+.info-card .card-body {
+    padding: 10px 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.info-card .card-body .card-title {
+    margin-bottom: 10px;
+}
+
+.info-card .card-body .card-icon {
+    position: relative;
+    display: inline-block;
+    color: #673ab7;
+    margin-right: 20px;
+}
+
+.info-card .card-body .card-icon span {
+    font-size: 40px;
+    line-height: 60px;
+}
+
+.charts-block,
+.datatable-block {
+    border-radius: 5px;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0px 0px 3px 0px rgba(0,0,0,.2);
+    padding: 20px 0;
+}
+
+.datatable-block {
+    padding: 20px;
+}
+
+.datatable-block #movies___byGenres_length.dataTables_length,
+.datatable-block #movies___byGenres_filter.dataTables_filter {
+    display: none !important;
+}
+
+
+
+.genres_dropdown{
+    float: left;
+    margin-right: 5;
+}
+
+
+.datatable-filter .datatable_dropdowns{
+    margin: 5;
+}

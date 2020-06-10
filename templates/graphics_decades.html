@@ -1,0 +1,50 @@
+<section class="stats-charts sect">
+    <h2 class="sect-title">Production Decades of your Watchlist</h2>
+    <div class="charts-block">
+        <div class="row">
+            <div class="col-md-12">
+                <figure class="highcharts-figure">
+                    <div id="decades"></div>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+Highcharts.chart('decades', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Decades'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Year Percentage',
+        colorByPoint: true,
+        data: {{ decadesData|safe }}
+    }]
+});
+</script>
