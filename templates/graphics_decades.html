@@ -1,19 +1,19 @@
 <section class="stats-charts sect">
-    <h2 class="sect-title">Movie Genres of your Watchlist</h2>
+    <h2 class="sect-title">Production Decades of your Watchlist</h2>
     <div class="charts-block">
         <div class="row">
             <div class="col-md-12">
                 <figure class="highcharts-figure">
-                    <div id="top10"></div>
+                    <div id="decades"></div>
                 </figure>
             </div>
         </div>
     </div>
 </section>
 
-
 <script>
-Highcharts.chart('top10', {
+
+Highcharts.chart('decades', {
     chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -21,7 +21,7 @@ Highcharts.chart('top10', {
         type: 'pie'
     },
     title: {
-        text: 'Top 10 Genres'
+        text: 'Decades'
     },
     tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -42,10 +42,9 @@ Highcharts.chart('top10', {
         }
     },
     series: [{
-        name: 'Genre Percentage',
+        name: 'Year Percentage',
         colorByPoint: true,
-        data: {{ genresData|safe }}
+        data: {{ decadesData|safe }}
     }]
 });
-
 </script>

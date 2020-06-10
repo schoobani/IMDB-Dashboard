@@ -8,7 +8,8 @@ import csv
 import os
 import pandas as pd
 import numpy as np
-watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
+from random import choice
+from string import ascii_uppercase
 
 
 home = Blueprint('home', __name__)
@@ -110,7 +111,7 @@ def generate_genres_year(watchlist):
 
 def top10_genres_stats(genres):
     genres_sorted = sorted(genres.items(), key=lambda x: x[1], reverse=True)
-    top10_genres = genres_sorted[:10]
+    top10_genres = genres_sorted
 
     total_count = sum(row[1] for row in top10_genres)
 
@@ -220,8 +221,8 @@ def get_movies():
 
 @home.route('/')
 def index():
-    # global watchlist
-    # watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
+    global watchlist
+    watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
     genres = generate_genres(watchlist)
 
     top_directors(watchlist)
@@ -270,23 +271,6 @@ def index():
     )
 
 
-def allowed_file(filename):
-
-    # We only want files with a . in the filename
-    if not "." in filename:
-        return False
-
-    # Split the extension from the filename
-
-
-    # Check if the extension is in ALLOWED_IMAGE_EXTENSIONS
-    if ext.upper() in ['csv']:
-        return True
-    else:
-        return False
-
-
-
 
 @home.route("/", methods=["GET", "POST"])
 def upload_file():
@@ -299,9 +283,11 @@ def upload_file():
             ext = filename.rsplit(".", 1)[1]
 
             if ext.lower() == 'csv':
-                file.save(os.path.join("datasets/FILE_UPLOADS", file.filename))
+
+                new_random_name = (''.join(choice(ascii_uppercase) for i in range(20)))
+                file.save(os.path.join("datasets/FILE_UPLOADS", new_random_name))
                 global watchlist
-                watchlist = pd.read_csv("datasets/FILE_UPLOADS/{}".format(file.filename),encoding="ISO-8859-1")
+                watchlist = pd.read_csv("datasets/FILE_UPLOADS/{}".format(new_random_name),encoding="ISO-8859-1")
 
             else:
                 print ("File is not correct")

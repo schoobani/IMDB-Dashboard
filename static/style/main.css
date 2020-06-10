@@ -50,10 +50,21 @@ h1, h2, h3, h4, h5, h6 {
 
 .page-topbar .upload {
     position: relative;
+    float: left;
+    margin: 10PX;
+}
+
+.custom-file-input{
+    float: left;
+}
+
+.btn-primary{
     float: right;
 }
 
-
+.upload{
+    float: right !important;
+}
 
 .page-topbar .quick-area::before {
     position: absolute;
@@ -108,6 +119,57 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 5px;
 }
 
+.director-card {
+    position: relative;
+    padding: 5px 15px;
+    background-color: #fff;
+    box-shadow: 0px 3px 3px 1px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    min-height: 200px;
+}
+
+.director-card .card-body .card-title {
+    margin-top: 10px;
+}
+
+.director-card .card-body .card-text{
+    text-align: center;
+}
+
+.director-card .card-body .card-badge-head{
+    text-align: center;
+}
+
+
+
+.top-directors .directors {
+    margin-top: 50px;
+}
+/*
+.director-card .card-body .card-badge {
+  position:absolute;
+  top:-10px;
+  left:-15px;
+} */
+
+.card-img{
+ width: 100%!important;
+ position: relative;
+ border-radius: 50%;
+ top: -30px;
+ border:7px solid #ffffff;
+}
+
+
+
+/* .director-card .card-body {
+    padding: 10px 20px;
+    position: relative;
+    z-index: 2;
+} */
+
+
+
 .info-card .card-body {
     padding: 10px 20px;
     position: relative;
@@ -149,7 +211,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-.card-img{
- width: 100%!important;
- object-fit: cover;
+
+.genres_dropdown{
+    float: left;
+    margin-right: 5;
+}
+
+
+.datatable-filter .datatable_dropdowns{
+    margin: 5;
 }
