@@ -1,16 +1,16 @@
 <section class="stats-datatable sect">
     <h2 class="sect-title">Movies by genres</h2>
     <div class="datatable-filter">
-        <div class="">
-            <select class="datatable__movie_genre" id="movie_Genre" name="movie_genre">
+        <div class="datatable-dropdown">
+            <select class="datatable__movie_genre mdb-select md-form" id="movie_Genre" name="movie_genre" searchable="Search here..">
                 <option value="all">All</option>
                 {% for genre in genres %}
                 <option value="{{genre}}">{{genre}}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="">
-            <select class="datatable__movie_genre" id="movie_Decade" name="movie_decade">
+        <div class="datatable-dropdown">
+            <select class="datatable__movie_genre mdb-select md-form" id="movie_Decade" name="movie_decade" searchable="Search here..">
                 <option value="all">All</option>
                 {% for decade in decades %}
                 <option value="{{decade}}">{{decade}}</option>
@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="datatable-block">
-        <table cellpadding="0" cellspacing="0" border="0" class="display" id="movies___byGenres" width="100%">
+        <table cellpadding="0" cellspacing="0" border="0" class="display table table-striped table-sm" id="movies___byGenres" width="100%">
             <thead>
                 <tr>
                     <th width="50%">Movie</th>
@@ -71,6 +71,11 @@
                     ]
                 })
             });
+        });
+
+        // Material Select Initialization
+        $(document).ready(function() {
+            $('.mdb-select').materialSelect();
         });
 
     });

@@ -86,8 +86,8 @@ def generate_genres_year(watchlist):
     def get_decade(year):
         return year - year % 10
 
-    def split_genres(genres):
-        return genres.split(",")
+    # def split_genres(genres):
+    #     return genres.split(",")
 
     watchlist["Title"] = watchlist["Title"].apply(clear_title)
     watchlist["Year"] = watchlist["Year"].apply(get_decade)

@@ -2,14 +2,16 @@
     <h2 class="sect-title">Top Directors</h2>
     <div class="row">
         {% for director in top_directors %}
-        <div class="col-lg-1 col md-6 col-sm-6">
-            <div class="info-card">
-                <img src="{{ url_for('static', filename='img/dir_img/'+director.image_url) }}" alt="{{image_url}}"  class="card-img-top card-img img-fluid">
+        <div class="col-lg-1 col-md-4 col-sm-3 col-xs-6">
+            <div class="director-card card">
+                <div class="card-image">
+                    <img src="{{ url_for('static', filename='img/dir_img/'+director.image_url) }}" class="card-img-top" alt="{{image_url}}">
+                </div>
                 <div class="card-body">
-                    <div class="d-inlineb">
-                        <h4 class="card-title">{{ director.name }}</h4>
-                        <span class="card-text">{{ director.count }}</span>
-                    </div>
+                    <h5 class="card-title">{{ director.name }}</h5>
+                    <p class="card-text">
+                        # <span>{{ director.count }}</span>
+                    </p>
                 </div>
             </div>
         </div>
