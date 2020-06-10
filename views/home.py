@@ -293,8 +293,11 @@ def upload_file():
                 print ("File is not correct")
                 watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
 
-
-            genres = generate_genres(watchlist)
+            try:
+                genres = generate_genres(watchlist)
+            except:
+                watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
+                genres = generate_genres(watchlist)
 
             top_directors(watchlist)
 
