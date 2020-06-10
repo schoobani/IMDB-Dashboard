@@ -2,7 +2,6 @@ from flask import Flask
 from views import blueprints
 
 
-
 def create_app():
 
     app = Flask(__name__)

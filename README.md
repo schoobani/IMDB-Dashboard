@@ -5,5 +5,5 @@ A data dashboard, developed by Plotly Dash for IMDB watchlists. All you need is 
 
 To run program use the following code
 ```
-python3 watchlist_dashboard.py
+python3 main.py
 ```
