@@ -321,12 +321,12 @@ def upload_file():
                 {
                     'title': 'Total Directors',
                     'number': director_count(watchlist),
-                    'icon': 'movie',
+                    'icon': 'account_circle',
                 },
                 {
                     'title': 'Total Genres',
                     'number': len(list(generate_genres_year(watchlist).keys())),
-                    'icon': 'movie',
+                    'icon': 'category',
                 },
                 {
                     'title': 'Total Minutes',

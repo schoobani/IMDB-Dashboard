@@ -5,10 +5,24 @@
     </div>
     <div class="upload-area">
         <div class="file-upload-wrapper">
-            <input type="file" id="input-file-now" class="file-upload" />
+            <form class="md-form">
+                <div class="file-field big">
+                    <a class="upload-btn bg-dark-orange float-left">
+                        <span class="material-icons">
+                            cloud_upload
+                        </span>
+                        <input type="file" multiple>
+                    </a>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" placeholder="Upload one or more files">
+                    </div>
+                    <div class="file-submit-wrapper">
+                        <button class="btn btn-sm btn-md btn-primary bg-dark-orange">
+                            <span class="">Upload</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<script>
-    $('.file-upload').file_upload();
-</script>

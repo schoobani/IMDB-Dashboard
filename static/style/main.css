@@ -14,6 +14,13 @@ h1, h2, h3, h4, h5, h6 {
     color: #505458;
 }
 
+.dark-orange {
+    color: #ff6e40 !important;
+}
+.bg-dark-orange {
+    background-color: #ff6e40 !important;
+}
+
 .d-inlineb {
     display: inline-block;
 }
@@ -27,6 +34,7 @@ h1, h2, h3, h4, h5, h6 {
     min-height: 60px;
     background-color: #37474f;
     box-shadow: 0 1px 3px rgba(0,0,0,0),0 2px 2px rgba(0,0,0,0.1);
+    overflow: hidden;
 }
 
 .page-topbar .logo-area {
@@ -69,6 +77,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 600px;
     min-height: 60px;
     background-color: #f2f2f2;
+    padding: 10px 40px;
 }
 
 
@@ -183,4 +192,50 @@ h1, h2, h3, h4, h5, h6 {
 
 .director-card .card-body .card-text>span {
     font-size: 20px;
+}
+
+
+.upload-area form.md-form {
+    margin: 0px !important;
+}
+
+.file-field input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    filter: alpha(opacity=0);
+    opacity: 0;
+}
+
+.upload-btn {
+    border: 3px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+}
+
+.upload-btn span.material-icons {
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    color: #fff !important;
+}
+
+.file-path-wrapper,
+.file-submit-wrapper {
+    display: inline-block;
+}
+
+.file-field > div {
+    margin-left: 10px;
+}
+
+.file-path-wrapper {
+    margin-top: 8px;
+    max-width: 360px !important;
 }
