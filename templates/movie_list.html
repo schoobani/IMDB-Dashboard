@@ -1,16 +1,16 @@
 <section class="stats-datatable sect">
     <h2 class="sect-title">Select your Movie Genre and Decade</h2>
-    <div class="datatable-filter">
-        <div class="datatable-dropdown">
-            <select class="datatable__movie_genre mdb-select md-form" id="movie_Genre" name="movie_genre" searchable="Search here..">
+    <div class="datatable-filter row">
+        <div class="datatable-dropdown col-md-6">
+            <select class="datatable__movie_genre" id="movie_Genre" name="movie_genre" searchable="Search here..">
                 <option value="all">All</option>
                 {% for genre in genres %}
                 <option value="{{genre}}">{{genre}}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="datatable-dropdown">
-            <select class="datatable__movie_genre mdb-select md-form" id="movie_Decade" name="movie_decade" searchable="Search here..">
+        <div class="datatable-dropdown col-md-6">
+            <select class="datatable__movie_genre" id="movie_Decade" name="movie_decade" searchable="Search here..">
                 <option value="all">All</option>
                 {% for decade in decades %}
                 <option value="{{decade}}">{{decade}}</option>
@@ -46,7 +46,7 @@
                 { data: 'IMDB Rating' },
                 { data: 'Rating Count' }
             ]
-        })
+        });
 
         $( ".datatable__movie_genre" ).on("change", function() {
             var genreID = $("#movie_Genre").val()
@@ -71,11 +71,6 @@
                     ]
                 })
             });
-        });
-
-        // Material Select Initialization
-        $(document).ready(function() {
-            $('.mdb-select').materialSelect();
         });
 
     });

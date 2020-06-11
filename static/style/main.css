@@ -20,6 +20,9 @@ h1, h2, h3, h4, h5, h6 {
 .bg-dark-orange {
     background-color: #ff6e40 !important;
 }
+.bg-dark-blue {
+    background-color: #37474f !important;
+}
 
 .d-inlineb {
     display: inline-block;
@@ -247,4 +250,16 @@ h1, h2, h3, h4, h5, h6 {
 .file-path-wrapper {
     margin-top: 8px;
     max-width: 360px !important;
+}
+
+.datatable-filter {
+    margin-bottom: 20px;
+}
+
+.datatable-dropdown select {
+    width: 100%;
+    height: 30px;
+    border-color: transparent;
+    background-color: transparent;
+    border-bottom: 1px solid #37474f;
 }

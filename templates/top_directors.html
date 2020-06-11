@@ -2,8 +2,8 @@
     <h2 class="sect-title">Top Directors</h2>
     <div class="row directors">
         {% for director in top_directors %}
-        <div class="col-lg-1 col-md-4 col-sm-3 col-xs-6">
-            <div class="director-card card">
+        <div class="col-lg-2 col-md-4 col-sm-3 col-xs-6">
+            <div class="director-card">
                 <div class="card-image">
                     <img src="{{ url_for('static', filename='img/dir_img/'+director.image_url) }}" class="card-img-top" alt="{{image_url}}">
                 </div>

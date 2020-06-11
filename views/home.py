@@ -219,7 +219,7 @@ def get_movies():
 
 
 
-@home.route('/')
+@home.route('/', methods=["GET"])
 def index():
     global watchlist
     watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
@@ -236,12 +236,12 @@ def index():
         {
             'title': 'Total Directors',
             'number': director_count(watchlist),
-            'icon': 'movie',
+            'icon': 'account_circle',
         },
         {
             'title': 'Total Genres',
             'number': len(list(generate_genres_year(watchlist).keys())),
-            'icon': 'movie',
+            'icon': 'category',
         },
         {
             'title': 'Total Minutes',
@@ -272,7 +272,23 @@ def index():
 
 
 
-@home.route("/", methods=["GET", "POST"])
+def allowed_file(filename):
+
+    # We only want files with a . in the filename
+    if not "." in filename:
+        return False
+
+    # Split the extension from the filename
+
+
+    # Check if the extension is in ALLOWED_IMAGE_EXTENSIONS
+    if ext.upper() in ['csv']:
+        return True
+    else:
+        return False
+
+
+@home.route('/', methods=["POST"])
 def upload_file():
 
     if request.method == "POST":
@@ -298,8 +314,6 @@ def upload_file():
             except:
                 watchlist = pd.read_csv("datasets/WATCHLIST_mahi.csv",encoding="ISO-8859-1")
                 genres = generate_genres(watchlist)
-
-            top_directors(watchlist)
 
             general = [
                 {
@@ -343,3 +357,5 @@ def upload_file():
                 movieList=json.dumps(get_titles(generate_genres_year(watchlist), 'all', 'all', watchlist)),
                 top_directors = top_directors(watchlist)
             )
+        return None
+    return None
