@@ -1,10 +1,14 @@
+<title>IMDB DASHBOARD</title>
 {% extends 'base.html' %}
 
 {% block content %}
 {% include 'general_info.html' %}
 <div class="row">
-    <div class="col-lg-8 col-md-12">
+    <div class="col-lg-4 col-md-12">
         {% include 'graphics.html' %}
+    </div>
+    <div class="col-lg-4 col-md-12">
+        {% include 'graphics_decades.html' %}
     </div>
     <div class="col-lg-4 col-md-6 col-sm-12">
         {% include 'movie_list.html' %}

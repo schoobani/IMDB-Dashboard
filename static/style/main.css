@@ -80,6 +80,9 @@ h1, h2, h3, h4, h5, h6 {
     padding: 10px 40px;
 }
 
+.custom-file-input{
+    float: left;
+}
 
 .page-topbar .upload-area::before {
     position: absolute;
@@ -157,9 +160,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-.card-img{
- width: 100%!important;
- object-fit: cover;
+
+.genres_dropdown{
+    float: left;
+    margin-right: 5;
+}
+
+
+.datatable-filter .datatable_dropdowns{
+    margin: 5;
 }
 
 .director-card {
