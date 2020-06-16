@@ -1,9 +1,9 @@
+flask
+Jinja2
 pandas
 numpy
-Flask
 Werkzeug
 gunicorn
 itsdangerous
-Jinja2
 MarkupSafe
 Click
